@@ -123,9 +123,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         + "' AND '"
                         + date
                         +"'; ";
-        Log.d("ANAS", query);
+
         calendar.setTime(Calendar.getInstance().getTime());
-        calendar = Calendar.getInstance();
         Cursor cursor = db.rawQuery(query, null);
         int count = cursor.getCount();
         cursor.close();
