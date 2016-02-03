@@ -3,47 +3,95 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app= "http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/workout_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryDark"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:theme="@style/Base.ThemeOverlay.AppCompat.Dark" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/counter"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/first_exercice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:text="EXERCICE ONE"
+            android:padding="4dp"
+            android:textSize="24sp"
+            android:layout_centerInParent="true" />
+
+        <ImageView
+            android:id="@+id/video_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_video_white_36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"/>
+
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/counter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000"
+        android:textColor="#FFF"
         android:gravity="center"
+        android:text="START!"
+        android:textSize="100sp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_centerInParent="true" />
 
+    <TextView
+        android:id="@+id/second_exercice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#FFF"
+        android:text="Next: EXERCICE TWO"
+        android:textSize="24sp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/counter"/>
+
     <Button
         android:id="@+id/counter_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
+        android:layout_height="?attr/actionBarSize"
         android:text="START WORKOUT"
         android:textColor="#FFF"
         android:textSize="24dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:layout_alignParentBottom="true"/>
 
     <Button
         android:id="@+id/counter_button_pause"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
+        android:layout_height="?attr/actionBarSize"
         android:text="PAUSE"
         android:textColor="#FFF"
         android:textSize="24dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"/>
+
+    <Button
+        android:id="@+id/counter_button_resume"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:text="RESUME"
+        android:textColor="#FFF"
+        android:textSize="24dp"
+        android:background="@color/colorPrimary"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.TextView;
 
+import com.benzino.fiveminworkout.DatabaseHandler;
+import com.benzino.fiveminworkout.MainActivity;
 import com.benzino.fiveminworkout.Model;
 import com.benzino.fiveminworkout.MyAdapter;
 import com.benzino.fiveminworkout.R;
@@ -35,6 +38,11 @@ import java.util.List;
  * Created by Anas on 23/1/16.
  */
 public class ProgressFragment extends android.support.v4.app.Fragment{
+    private MaterialCalendarView calendarView;
+    private DatabaseHandler db;
+    private TextView workoutCount;
+    private Calendar calendar = Calendar.getInstance();
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,20 +54,24 @@ public class ProgressFragment extends android.support.v4.app.Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_progress, container, false);
-        MaterialCalendarView calendarView = (MaterialCalendarView) view.findViewById(R.id.calendar);
-        TextView text = (TextView) view.findViewById(R.id.textView);
+        calendarView = (MaterialCalendarView) view.findViewById(R.id.calendar);
 
-        //calendarView.setPagingEnabled(false);
+        workoutCount = (TextView) view.findViewById(R.id.total_workout_number);
 
-        List<CalendarDay> list = new ArrayList<CalendarDay>();
-        Calendar calendar = Calendar.getInstance();
+        db = DatabaseHandler.getInstance(getContext());
 
-        CalendarDay calendarDay = CalendarDay.from(calendar);
-        list.add(calendarDay);
+        workoutCount.setText(""+db.getTestsInMonth(calendar));
 
-        calendarView.addDecorators(new EventDecorator(Color.RED, list));
+        calendarView.addDecorators(new EventDecorator(Color.RED, db.getDates()));
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        calendarView.addDecorators(new EventDecorator(Color.RED, db.getDates()));
+        workoutCount.setText("" + db.getTestsInMonth(calendar));
     }
 
     private class EventDecorator implements DayViewDecorator {

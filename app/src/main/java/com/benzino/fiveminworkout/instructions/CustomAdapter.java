@@ -37,7 +37,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.PlyoCardio
         Model item = list.get(position);
         holder.titleTextView.setText(item.mTitle);
         holder.descTextView.setText(item.mDescription);
-        holder.videoButton.setText("WATCH VIDEO");
+        holder.videoButton.setText("VIDEO");
 
         if(context.getClass().getSimpleName().equals(FatCardio.class.getSimpleName())){
             if (position == 2){
