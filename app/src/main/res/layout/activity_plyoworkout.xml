@@ -72,15 +72,7 @@
         android:layout_marginTop="16dp"
         android:layout_below="@+id/counter"/>
 
-    <Button
-        android:id="@+id/counter_button"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:text="START WORKOUT"
-        android:textColor="#FFF"
-        android:textSize="24dp"
-        android:background="@color/colorPrimary"
-        android:layout_alignParentBottom="true"/>
+
 
     <Button
         android:id="@+id/counter_button_pause"

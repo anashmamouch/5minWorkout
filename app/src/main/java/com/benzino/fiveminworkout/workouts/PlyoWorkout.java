@@ -2,14 +2,17 @@ package com.benzino.fiveminworkout.workouts;
 
 import android.annotation.TargetApi;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +24,9 @@ import com.benzino.fiveminworkout.DatabaseHandler;
 import com.benzino.fiveminworkout.R;
 import com.benzino.fiveminworkout.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -32,7 +37,6 @@ public class PlyoWorkout extends AppCompatActivity {
     private TextView counter;
     private TextView exercise1;
     private TextView exercise2;
-    private Button start;
     private Button resume;
     private Button pause;
     private ProgressBar spinner;
@@ -44,16 +48,20 @@ public class PlyoWorkout extends AppCompatActivity {
     private static final int REST_TIME = 10000;
 
     private boolean isPaused = false;
+
+    private CountDownTimer timer;
+
     private long timeRemaining = 0;
 
     private TextToSpeech tts;
 
-    private boolean ttsReady = false;
+    private volatile boolean ttsReady = false;
 
     private DatabaseHandler db;
 
     private long startTime;
     private long launchTime;
+
 
     @SuppressWarnings("deprecation")
     @Override
@@ -88,20 +96,12 @@ public class PlyoWorkout extends AppCompatActivity {
             }
         });
 
-        final Bundle bundle = new Bundle();
-        new Bundle().putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tts.speak(" ", TextToSpeech.QUEUE_FLUSH, bundle, "ANAS" );
-        }else {
-            tts.speak(" ", TextToSpeech.QUEUE_FLUSH, null);
-        }
 
         counter = (TextView) findViewById(R.id.counter);
         exercise1 = (TextView) findViewById(R.id.first_exercice);
         exercise2 = (TextView) findViewById(R.id.second_exercice);
 
-        start = (Button) findViewById(R.id.counter_button);
+
         pause = (Button) findViewById(R.id.counter_button_pause);
         resume = (Button) findViewById(R.id.counter_button_resume);
 
@@ -117,30 +117,25 @@ public class PlyoWorkout extends AppCompatActivity {
         pause.setVisibility(View.GONE);
         resume.setVisibility(View.GONE);
 
+
         counter.setOnClickListener(new View.OnClickListener() {
-            //@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
             @Override
             public void onClick(View v) {
                 counter.setEnabled(false);
                 launchTime = System.currentTimeMillis();
 
+                Bundle bundle = new Bundle();
+                bundle.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!ttsReady)
-                                spinner.setVisibility(View.VISIBLE);
-                        }
-                    });
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
 
-
-
-                //speak("Start exercise 1", TextToSpeech.QUEUE_ADD);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    tts.speak("Start exercise 1 ", TextToSpeech.QUEUE_FLUSH, bundle, "ANAS");
-
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    tts.speak(" ", TextToSpeech.QUEUE_FLUSH, bundle, "ANAS");
+                }else{
+                    tts.speak(" ", TextToSpeech.QUEUE_FLUSH, hashMap);
+                }
 
                 tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                     @Override
@@ -162,20 +157,7 @@ public class PlyoWorkout extends AppCompatActivity {
                     }
                 });
 
-                while (!ttsReady){
-
-                    //spinner.setVisibility(View.VISIBLE);
-                }
-                    //spinner.setVisibility(View.INVISIBLE);
-
-                startCounter();
-            }
-        });
-
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startCounter();
+                new Task().execute();
             }
         });
 
@@ -226,15 +208,72 @@ public class PlyoWorkout extends AppCompatActivity {
         speak("1. "+message, TextToSpeech.QUEUE_ADD);
     }
 
+    public void speaking(String[] array) {
+
+
+        if(timeRemaining<111000 && 110500<=timeRemaining){
+            speak(array[0], TextToSpeech.QUEUE_ADD);
+        }
+
+        if(timeRemaining <87000 && 86300<=timeRemaining){
+            speakCountdown("Take a Rest. 10 seconds");
+        }
+
+        if (timeRemaining <77000 && 76300<=timeRemaining){
+            speakCountdown(array[1]);
+        }
+
+        if (timeRemaining <47000 && 46300<=timeRemaining){
+            speakCountdown("Take a Rest. 10 seconds.");
+        }
+
+        if (timeRemaining <37000 && 36300<=timeRemaining){
+            speakCountdown(array[2]);
+        }
+
+        if (timeRemaining <7000 && 6300<=timeRemaining){
+            speakCountdown("Take a rest and breathe deeply, your Workout is done for today.");
+        }
+    }
+
+    public void textCounting(long millisUntilFinished){
+        if(timeRemaining < 111000 && 81000 <= timeRemaining){
+            counter.setText("" + ((millisUntilFinished - 81000) / 1000));
+        }
+        if(timeRemaining < 81000 && 71000 <= timeRemaining){
+            counter.setText("" + ((millisUntilFinished - 71000) / 1000));
+            exercise1.setText("REST");
+        }
+        if(timeRemaining < 71000 && 41000 <= timeRemaining){
+            exercise1.setText("EXERCICE TWO");
+            counter.setText("" + ((millisUntilFinished - 41000)/ 1000));
+            exercise2.setText("Next: EXERCICE THREE");
+        }
+        if(timeRemaining < 41000 && 31000 <=timeRemaining){
+            counter.setText("" + ((millisUntilFinished - 31000)/ 1000));
+            exercise1.setText("REST");
+        }
+        if(timeRemaining < 31000){
+            counter.setText(""+millisUntilFinished/1000);
+            exercise2.setText("");
+            exercise1.setText("EXERCISE THREE");
+        }
+    }
+
+    public void done() {
+        counter.setText("");
+        exercise2.setText("");
+        exercise1.setText("THE END");
+        db = DatabaseHandler.getInstance(PlyoWorkout.this);
+        db.createTest(new Test("PLYO"));
+    }
 
     public void startCounter(){
         //start.setText("PAUSE");
         pause.setEnabled(true);
-        start.setEnabled(false);
-        start.setVisibility(View.GONE);
         pause.setVisibility(View.VISIBLE);
 
-        new CountDownTimer(millisInFuture, interval) {
+        timer = new CountDownTimer(millisInFuture, interval) {
 
             /**
              * Callback fired on regular interval.
@@ -244,6 +283,7 @@ public class PlyoWorkout extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 if(isPaused){
+
                     cancel();
                 }else {
 
@@ -253,53 +293,18 @@ public class PlyoWorkout extends AppCompatActivity {
                     //1 second = 1000 milliseconds
                     counter.setText("" + (millisUntilFinished / 1000));
 
-                    Log.d("ANASS","isSpeaking?= "+ tts.isSpeaking() + "; isReady?="+ttsReady+";  Time: " + timeRemaining);
+                    Log.d("ANASS", "isSpeaking?= " + tts.isSpeaking() + "; isReady?=" + ttsReady + ";  Time: " + timeRemaining);
 
+                    String[] array ;
+                    array = new String[]{
+                            "Start Exercice 1",
+                            "Start Exercice 2",
+                            "Start Exercice 3"};
 
+                    speaking(array);
 
-                    if(timeRemaining <87000 && 86300<=timeRemaining){
-                        speakCountdown("Take a Rest. 10 seconds");
-                    }
+                    textCounting(millisUntilFinished);
 
-                    if (timeRemaining <77000 && 76300<=timeRemaining){
-                        speakCountdown("Start Exercise 2.");
-                    }
-
-                    if (timeRemaining <47000 && 46300<=timeRemaining){
-                        speakCountdown("Take a Rest. 10 seconds.");
-                    }
-
-                    if (timeRemaining <37000 && 36300<=timeRemaining){
-                        speakCountdown("Start Exercise 3");
-                    }
-
-                    if (timeRemaining <7000 && 6300<=timeRemaining){
-                        speakCountdown("Take a rest and breathe deeply, your Workout is done for today.");
-                    }
-
-                    if(timeRemaining < 111000 && 81000 <= timeRemaining){
-                        counter.setText("" + ((millisUntilFinished - 81000) / 1000));
-                    }
-                    if(timeRemaining < 81000 && 71000 <= timeRemaining){
-                        counter.setText("" + ((millisUntilFinished - 71000) / 1000));
-                        exercise1.setText("REST");
-
-                        //speak("REST");
-                    }
-                    if(timeRemaining < 71000 && 41000 <= timeRemaining){
-                        exercise1.setText("EXERCICE TWO");
-                        counter.setText("" + ((millisUntilFinished - 41000)/ 1000));
-                        exercise2.setText("Next: EXERCICE THREE");
-                    }
-                    if(timeRemaining < 41000 && 31000 <=timeRemaining){
-                        counter.setText("" + ((millisUntilFinished - 31000)/ 1000));
-                        exercise1.setText("REST");
-                    }
-                    if(timeRemaining < 31000){
-                        counter.setText(""+millisUntilFinished/1000);
-                        exercise2.setText("");
-                        exercise1.setText("EXERCISE THREE");
-                    }
                 }
             }
             /**
@@ -307,13 +312,10 @@ public class PlyoWorkout extends AppCompatActivity {
              */
             @Override
             public void onFinish() {
-                    counter.setText("");
-                    exercise2.setText("");
-                    exercise1.setText("THE END");
-                    db = DatabaseHandler.getInstance(PlyoWorkout.this);
-                    db.createTest(new Test("PLYO"));
+                   done();
             }
         }.start();
+
     }
 
     public void resumeCounter(){
@@ -324,10 +326,11 @@ public class PlyoWorkout extends AppCompatActivity {
 
         isPaused = false;
 
+
         //Initialize a new CountDownTimer instance
         final long millisInFuture = timeRemaining;
 
-        new CountDownTimer(millisInFuture, interval) {
+        timer = new CountDownTimer(millisInFuture, interval) {
             /**
              * Callback fired on regular interval.
              *
@@ -336,11 +339,22 @@ public class PlyoWorkout extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 if(isPaused){
+
                     cancel();
                 }else{
                     counter.setText("" + ((millisUntilFinished)/1000));
                     //Put count down timer remaining time in a variable
                     timeRemaining = millisUntilFinished;
+
+                    String[] array ;
+                    array = new String[]{
+                            "Start Exercice 1",
+                            "Start Exercice 2",
+                            "Start Exercice 3"};
+
+                    speaking(array);
+
+                    textCounting(millisUntilFinished);
                 }
             }
 
@@ -349,9 +363,10 @@ public class PlyoWorkout extends AppCompatActivity {
              */
             @Override
             public void onFinish() {
-
+                done();
             }
         }.start();
+
     }
 
     public void pauseCounter(){
@@ -363,12 +378,42 @@ public class PlyoWorkout extends AppCompatActivity {
         resume.setVisibility(View.VISIBLE);
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(tts != null){
             tts.stop();
             tts.shutdown();
+        }
+        if(timer !=null){
+            timer.cancel();
+            timer = null;
+        }
+    }
+
+    public class Task extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            spinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            while(!ttsReady){
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            spinner.setVisibility(View.GONE);
+            startCounter();
         }
     }
 
