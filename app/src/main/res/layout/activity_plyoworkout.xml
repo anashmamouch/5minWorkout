@@ -52,6 +52,15 @@
         android:layout_centerVertical="true"
         android:layout_centerInParent="true" />
 
+    <ProgressBar
+        android:id="@+id/spinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:progressDrawable="@drawable/circular_progress_view"
+        android:layout_centerInParent="true"/>
+
     <TextView
         android:id="@+id/second_exercice"
         android:layout_width="match_parent"
@@ -92,5 +101,6 @@
         android:textSize="24dp"
         android:background="@color/colorPrimary"
         android:layout_alignParentBottom="true"/>
+
 
 </RelativeLayout>
