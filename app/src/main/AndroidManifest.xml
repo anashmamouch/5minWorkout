@@ -20,6 +20,7 @@
         <activity android:name=".instructions.PlyoCardio"/>
         <activity android:name=".instructions.FatCardio"/>
         <activity android:name=".workouts.PlyoWorkout"/>
+        <activity android:name=".SettingsActivity"/>
     </application>
 
 </manifest>

@@ -81,7 +81,7 @@
         android:text="PAUSE"
         android:textColor="#FFF"
         android:textSize="24dp"
-        android:background="@color/colorPrimary"
+        android:background="@android:color/transparent"
         android:layout_alignParentBottom="true"/>
 
     <Button
@@ -91,7 +91,7 @@
         android:text="RESUME"
         android:textColor="#FFF"
         android:textSize="24dp"
-        android:background="@color/colorPrimary"
+        android:background="@android:color/transparent"
         android:layout_alignParentBottom="true"/>
 
 

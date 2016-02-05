@@ -1,6 +1,8 @@
 package com.benzino.fiveminworkout.instructions;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,10 +24,15 @@ public abstract class InstructionActivity extends AppCompatActivity {
 
     protected List<Model> list;
 
+    int anas;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instruction);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        anas = sp.getInt("preference_number", 0);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.instruction_toolbar);
         toolbar.setTitle(setToolbarTitle());

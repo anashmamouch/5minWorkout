@@ -1,7 +1,9 @@
 package com.benzino.fiveminworkout.fragments;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,14 +32,18 @@ import java.util.List;
 /**
  * Created by Anas on 23/1/16.
  */
-public class WorkoutFragment extends android.support.v4.app.Fragment {
+public class WorkoutFragment extends android.support.v4.app.Fragment{
 
     public List<Model> mList;
+    int anas;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        anas = sp.getInt("preference_number",32);
 
         initData();
     }
@@ -49,7 +55,6 @@ public class WorkoutFragment extends android.support.v4.app.Fragment {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-
 
         MyAdapter adapter = new MyAdapter(mList, getActivity());
 
@@ -64,9 +69,10 @@ public class WorkoutFragment extends android.support.v4.app.Fragment {
 
     public void initData(){
         mList = new ArrayList<Model>();
-        mList.add(new Model("Plyometric Cardio", "Focus on speed, agility and explosive power."));
+        mList.add(new Model("Plyometric Cardio"+ anas, "Focus on speed, agility and explosive power."));
         mList.add(new Model("Fat-burning Cardio", "Burn your calories quickly and increase your cardiovascular activity."));
         mList.add(new Model("ABS workout", "Get a flat belly and strenghten your core with these abs exercices."));
         mList.add(new Model("Leg Workout", "The ultimate excuse-free exercises for strong toned legs."));
     }
+
 }
