@@ -15,6 +15,7 @@
         android:theme="@style/Base.ThemeOverlay.AppCompat.Dark" />
 
     <RelativeLayout
+        android:id="@+id/layout_first_exercise"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/counter"
@@ -39,6 +40,46 @@
             android:layout_marginRight="8dp"/>
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/layout_first_exercise"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true">
+
+        <Button
+            android:id="@+id/repeat_workout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Repeat Workout"
+            android:textColor="#FFF"
+            android:textSize="24sp"
+            android:background="@android:color/transparent"/>
+
+        <Button
+            android:id="@+id/change_workout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change Workout"
+            android:textColor="#FFF"
+            android:textSize="24sp"
+            android:background="@android:color/transparent"/>
+
+        <Button
+            android:id="@+id/share_workout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:textColor="#FFF"
+            android:textSize="24sp"
+            android:background="@android:color/transparent"/>
+
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/counter"

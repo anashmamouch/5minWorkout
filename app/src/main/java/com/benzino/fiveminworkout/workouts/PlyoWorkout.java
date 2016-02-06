@@ -1,12 +1,15 @@
 package com.benzino.fiveminworkout.workouts;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +20,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.benzino.fiveminworkout.DatabaseHandler;
 import com.benzino.fiveminworkout.R;
@@ -32,47 +37,52 @@ import java.util.Locale;
 /**
  * Created by Anas on 31/1/16.
  */
-public class PlyoWorkout extends AppCompatActivity {
+public class PlyoWorkout extends AppCompatActivity implements View.OnClickListener{
 
     private TextView counter;
     private TextView exercise1;
     private TextView exercise2;
+    private ImageView video;
+    private Button repeatWorkout;
+    private Button changeWorkout;
+    private Button share;
     private Button resume;
     private Button pause;
     private ProgressBar spinner;
 
-    private long millisInFuture = 111000; //30 seconds
-    private long interval = 1000; //1 second
-
     private long TOTAL_TIME = 300000; //5 minutes Workout
-    private long EXERCISE_TIME = 13000; // 20seconds exercice time
+    private long EXERCISE_TIME = 7000; // 20seconds exercice time
     private long INTERVAL = 1000; // 1second interval
     private long REST_TIME = 7000; // 10seconds rest time
 
-    private int n = 1;
+    private int n = 1;//variables used to change textView counter
     private int j = 1;
 
-    private boolean isPaused = false;
+    private boolean isPaused = false;//boolean used to pause the counter
 
-    private CountDownTimer timer;
+    private CountDownTimer timer;//countdown timer used to calculate time remaining for the workout
 
-    private long timeRemaining = 0;
+    private long timeRemaining = 0;//variable to store the remaining time and use it to resume timer
 
-    private TextToSpeech tts;
+    private TextToSpeech tts;//text to speech allows speaking while counting
 
-    private volatile boolean ttsReady = false;
+    private volatile boolean ttsReady = false;//waits for text to speach to initialize
 
-    private DatabaseHandler db;
+    private String[] workouts;
 
     private long startTime;
     private long launchTime;
-
 
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plyoworkout);
+        //Keeping the device awake during the workout
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        mWakeLock.acquire();
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.workout_toolbar);
         toolbar.setTitle("Plyometric Cardio");
@@ -92,62 +102,94 @@ public class PlyoWorkout extends AppCompatActivity {
 
             @Override
             public void onInit(final int status) {
-
               tts.setLanguage(Locale.US);
-                counter.setEnabled(status == TextToSpeech.SUCCESS);
             }
         });
 
-
         counter = (TextView) findViewById(R.id.counter);
+        counter.setTypeface(font);
+
         exercise1 = (TextView) findViewById(R.id.first_exercice);
+
         exercise2 = (TextView) findViewById(R.id.second_exercice);
 
+        video = (ImageView) findViewById(R.id.video_icon);
+        video.setVisibility(View.GONE);
+
+        repeatWorkout = (Button) findViewById(R.id.repeat_workout);
+        repeatWorkout.setVisibility(View.GONE);
+
+        changeWorkout = (Button) findViewById(R.id.change_workout);
+        changeWorkout.setVisibility(View.GONE);
+
+        share = (Button) findViewById(R.id.share_workout);
+        share.setVisibility(View.GONE);
 
         pause = (Button) findViewById(R.id.counter_button_pause);
+        pause.setEnabled(false);
+        pause.setVisibility(View.GONE);
+
         resume = (Button) findViewById(R.id.counter_button_resume);
+        resume.setEnabled(false);
+        resume.setVisibility(View.GONE);
 
         spinner = (ProgressBar) findViewById(R.id.spinner);
         spinner.setVisibility(View.GONE);
 
-        //text.setText("23");
-        //counter.setTextSize(75 * getResources().getDisplayMetrics().density);
-        counter.setTypeface(font);
+        workouts = new String[]{
+                "Exercise 1",
+                "Exercise 2",
+                "Exercise 3",
+                "Exercise 4",
+                "Exercise 5",
+                "Exercise 6",
+                "Exercise 7",
+                "Exercise 8",
+                "Exercise 9",
+                "Exercise 10",
+                " "};
 
-        pause.setEnabled(false);
-        resume.setEnabled(false);
-        pause.setVisibility(View.GONE);
-        resume.setVisibility(View.GONE);
+        exercise1.setText(workouts[0]);
+        exercise2.setText("Next: " + workouts[1]);
 
+        counter.setOnClickListener(this);
+        pause.setOnClickListener(this);
+        resume.setOnClickListener(this);
+        repeatWorkout.setOnClickListener(this);
+        changeWorkout.setOnClickListener(this);
+        share.setOnClickListener(this);
+    }
 
-        counter.setOnClickListener(new View.OnClickListener() {
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param view The view that was clicked.
+     */
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.counter){
+            counter.setEnabled(false);
+            launchTime = System.currentTimeMillis();
 
-            @Override
-            public void onClick(View v) {
-                counter.setEnabled(false);
-                launchTime = System.currentTimeMillis();
+            initializeTextToSpeech();
 
-                initializeTextToSpeech();
+            new Task().execute();
+        }
+        if (view.getId() == R.id.counter_button_pause)
+            pauseCounter();
 
-                //startCounter();
+        if (view.getId() == R.id.counter_button_resume)
+            resumeCounter(workouts);
 
-                new Task().execute();
-            }
-        });
+        if(view.getId() == R.id.repeat_workout){
+            finish();
+            startActivity(new Intent(PlyoWorkout.this, PlyoWorkout.class));
+        }
+        if (view.getId() == R.id.change_workout)
+            onBackPressed();
 
-        pause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pauseCounter();
-            }
-        });
-
-        resume.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resumeCounter();
-            }
-        });
+        if (view.getId() == R.id.share_workout)
+            Toast.makeText(this, "SHARE ME ", Toast.LENGTH_SHORT).show();
     }
 
     public void initializeTextToSpeech(){
@@ -204,10 +246,6 @@ public class PlyoWorkout extends AppCompatActivity {
     }
 
     public void speakCountdown(String message){
-//        speak("5", TextToSpeech.QUEUE_ADD);
-//        silent();
-//        speak("4", TextToSpeech.QUEUE_ADD);
-//        silent();
         speak("3", TextToSpeech.QUEUE_ADD);
         silent();
         speak("2", TextToSpeech.QUEUE_ADD);
@@ -217,16 +255,21 @@ public class PlyoWorkout extends AppCompatActivity {
 
     public void speaking(String[] array) {
 
-        if(timeRemaining <(TOTAL_TIME) && (TOTAL_TIME - 400)<=timeRemaining){
+        if(timeRemaining < (TOTAL_TIME) && (TOTAL_TIME - 400) <=timeRemaining){
             speak("Start " + array[0], TextToSpeech.QUEUE_ADD);
         }
-        if(timeRemaining <(TOTAL_TIME - n * EXERCISE_TIME -  (n - 1) * REST_TIME +4000)
-                && (TOTAL_TIME - n * EXERCISE_TIME - (n - 1) * REST_TIME +3700)<=timeRemaining && REST_TIME !=0){
-            speakCountdown("Take a Rest. " + (REST_TIME/1000) + " seconds");
+        if(timeRemaining <(TOTAL_TIME - n * EXERCISE_TIME -  (n - 1) * REST_TIME - INTERVAL + 4000)
+                && (TOTAL_TIME - n * EXERCISE_TIME - (n - 1) * REST_TIME - INTERVAL + 3700)<=timeRemaining && REST_TIME !=0){
+
+            if (n == (array.length - 1)){
+                speakCountdown("Your workout is done for today");
+            }else{
+                speakCountdown("Take a Rest. " + (REST_TIME / 1000) + " seconds");
+            }
         }
-        if(timeRemaining <(TOTAL_TIME - n * EXERCISE_TIME -  n * REST_TIME +4000)
-                && (TOTAL_TIME - n * EXERCISE_TIME - n * REST_TIME +3700)<=timeRemaining && REST_TIME !=0){
-            speakCountdown("Start "+ array[n]);
+        if(timeRemaining <(TOTAL_TIME - n * EXERCISE_TIME -  n * REST_TIME - INTERVAL+ 4000)
+                && (TOTAL_TIME - n * EXERCISE_TIME - n * REST_TIME - INTERVAL + 3700)<=timeRemaining ){
+            speakCountdown("Start " + array[n]);
             n++ ;
         }
     }
@@ -234,133 +277,63 @@ public class PlyoWorkout extends AppCompatActivity {
     public void textCounting(long millisUntilFinished, String[] array) {
         if (timeRemaining < TOTAL_TIME
                 && (TOTAL_TIME - EXERCISE_TIME) <= timeRemaining) {
-            counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - EXERCISE_TIME)) / INTERVAL));
+            counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - EXERCISE_TIME - INTERVAL)) / INTERVAL));
+            exercise1.setText(array[0]);
+            exercise2.setText("Next: "+ array[1]);
+            video.setVisibility(View.VISIBLE);
         }
         if (timeRemaining < (TOTAL_TIME - j * EXERCISE_TIME - (j - 1) * REST_TIME)
                 && (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME) <= timeRemaining) {
-            counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME)) / INTERVAL ));
+            counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME - INTERVAL)) / INTERVAL ));
             exercise1.setText("REST");
+            video.setVisibility(View.GONE);
         }
         if (timeRemaining < (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME)
                 && (TOTAL_TIME - (j + 1) * EXERCISE_TIME - j * REST_TIME) <= timeRemaining) {
 
-            counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - (j+ 1) * EXERCISE_TIME - j * REST_TIME)) / INTERVAL));
+            counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - (j+ 1) * EXERCISE_TIME - j * REST_TIME - INTERVAL)) / INTERVAL));
             exercise1.setText(array[j]);
-            exercise2.setText("Next: "+ array[j + 1]);
+            video.setVisibility(View.VISIBLE);
+
+            if (j == (array.length - 2) ){
+                counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - (j+ 1) * EXERCISE_TIME - j * REST_TIME)) / INTERVAL));
+                exercise2.setText("");
+            }else {
+                exercise2.setText("Next: " + array[j + 1]);
+            }
         }
 
-        if ( timeRemaining <= (TOTAL_TIME - (j + 1) * EXERCISE_TIME - j * REST_TIME)){
+        if ( timeRemaining < (TOTAL_TIME - (j + 1) * EXERCISE_TIME - j * REST_TIME + INTERVAL)){
             j++;
+            Log.d("ANASTORM", "Array = "+array[j]+"; Value of j = " + j +"; Value of n = "+ n );
         }
-        /**
-        if (timeRemaining < (TOTAL_TIME - EXERCISE_TIME - REST_TIME)
-                && (TOTAL_TIME - 2 * EXERCISE_TIME - REST_TIME) <= timeRemaining) {
-
-            counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - 2 * EXERCISE_TIME - REST_TIME)) / INTERVAL));
-            exercise1.setText("EXERCISE TWO");
-            exercise2.setText("Next: EXERCISE THREE");
-        }
-        if (timeRemaining < (TOTAL_TIME - 2 * EXERCISE_TIME - REST_TIME)
-                && (TOTAL_TIME - 2 * EXERCISE_TIME - 2 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - 2 * EXERCISE_TIME - 2 * REST_TIME)) / INTERVAL));
-            exercise1.setText("REST");
-        }
-        if (timeRemaining < (TOTAL_TIME - 2 * EXERCISE_TIME - 2 * REST_TIME)
-                && (TOTAL_TIME - 3 * EXERCISE_TIME - 2 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 3 * EXERCISE_TIME - 2 * REST_TIME)) / INTERVAL);
-            exercise1.setText("EXERCISE THREE");
-            exercise2.setText("Next: EXERCISE FOUR");
-        }
-        if (timeRemaining < (TOTAL_TIME - 3 * EXERCISE_TIME - 2 * REST_TIME)
-                && (TOTAL_TIME - 3 * EXERCISE_TIME - 3 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 3 * EXERCISE_TIME - 3 * REST_TIME)) / INTERVAL);
-            exercise1.setText("REST");
-        }
-        if (timeRemaining < (TOTAL_TIME - 3 * EXERCISE_TIME - 3 * REST_TIME)
-                && (TOTAL_TIME - 4 * EXERCISE_TIME - 3 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 4 * EXERCISE_TIME - 3 * REST_TIME)) / INTERVAL);
-            exercise1.setText("EXERCISE FOUR");
-            exercise2.setText("Next: EXERCISE FIVE");
-        }
-        if (timeRemaining < (TOTAL_TIME - 4 * EXERCISE_TIME - 3 * REST_TIME)
-                && (TOTAL_TIME - 4 * EXERCISE_TIME - 4 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 4 * EXERCISE_TIME - 4 * REST_TIME)) / INTERVAL);
-            exercise1.setText("REST");
-        }
-        if (timeRemaining < (TOTAL_TIME - 4 * EXERCISE_TIME - 4 * REST_TIME)
-                && (TOTAL_TIME - 5 * EXERCISE_TIME - 4 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 5 * EXERCISE_TIME - 4 * REST_TIME)) / INTERVAL);
-            exercise1.setText("EXERCISE FIVE");
-            exercise2.setText("Next: EXERCISE SIX");
-        }
-        if (timeRemaining < (TOTAL_TIME - 5 * EXERCISE_TIME - 4 * REST_TIME)
-                && (TOTAL_TIME - 5 * EXERCISE_TIME - 5 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 5 * EXERCISE_TIME - 5 * REST_TIME)) / INTERVAL);
-            exercise1.setText("REST");
-        }
-        if (timeRemaining < (TOTAL_TIME - 5 * EXERCISE_TIME - 5 * REST_TIME)
-                && (TOTAL_TIME - 6 * EXERCISE_TIME - 5 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 6 * EXERCISE_TIME - 5 * REST_TIME)) / INTERVAL);
-            exercise1.setText("EXERCISE SIX");
-            exercise2.setText("Next: EXERCISE SEVEN");
-        }
-        if (timeRemaining < (TOTAL_TIME - 6 * EXERCISE_TIME - 5 * REST_TIME)
-                && (TOTAL_TIME - 6 * EXERCISE_TIME - 6 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 6 * EXERCISE_TIME - 6 * REST_TIME)) / INTERVAL);
-            exercise1.setText("REST");
-        }
-        if (timeRemaining < (TOTAL_TIME - 6 * EXERCISE_TIME - 6 * REST_TIME)
-                && (TOTAL_TIME - 7 * EXERCISE_TIME - 6 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 7 * EXERCISE_TIME - 6 * REST_TIME)) / INTERVAL);
-            exercise1.setText("EXERCISE SEVEN");
-            exercise2.setText("Next: EXERCISE EIGHT");
-        }
-        if (timeRemaining < (TOTAL_TIME - 7 * EXERCISE_TIME - 6 * REST_TIME)
-                && (TOTAL_TIME - 7 * EXERCISE_TIME - 7 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 7 * EXERCISE_TIME - 7 * REST_TIME)) / INTERVAL);
-            exercise1.setText("REST");
-        }
-        if (timeRemaining < (TOTAL_TIME - 7 * EXERCISE_TIME - 7 * REST_TIME)
-                && (TOTAL_TIME - 8 * EXERCISE_TIME - 7 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 8 * EXERCISE_TIME - 7 * REST_TIME)) / INTERVAL);
-            exercise1.setText("EXERCISE EIGHT");
-            exercise2.setText("Next: EXERCISE NINE");
-        }
-        if (timeRemaining < (TOTAL_TIME - 8 * EXERCISE_TIME - 7 * REST_TIME)
-                && (TOTAL_TIME - 8 * EXERCISE_TIME - 8 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 8 * EXERCISE_TIME - 8 * REST_TIME)) / INTERVAL);
-            exercise1.setText("REST");
-        }
-        if (timeRemaining < (TOTAL_TIME - 8 * EXERCISE_TIME - 8 * REST_TIME)
-                && (TOTAL_TIME - 9 * EXERCISE_TIME - 8 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 9 * EXERCISE_TIME - 8 * REST_TIME)) / INTERVAL);
-            exercise1.setText("EXERCISE NINE");
-            exercise2.setText("Next: EXERCISE TEN");
-        }
-        if (timeRemaining < (TOTAL_TIME - 9 * EXERCISE_TIME - 8 * REST_TIME)
-                && (TOTAL_TIME - 9 * EXERCISE_TIME - 9 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 9 * EXERCISE_TIME - 9 * REST_TIME)) / INTERVAL);
-            exercise1.setText("REST");
-        }
-        if (timeRemaining < (TOTAL_TIME - 9 * EXERCISE_TIME - 9 * REST_TIME)
-                && (TOTAL_TIME - 10 * EXERCISE_TIME - 9 * REST_TIME) <= timeRemaining) {
-            counter.setText("" + (millisUntilFinished - (TOTAL_TIME - 10 * EXERCISE_TIME - 9 * REST_TIME)) / INTERVAL);
-            exercise1.setText("EXERCICE TEN");
-            exercise2.setText(" ");
-        }
-         **/
     }
 
     public void done(String message) {
+        Typeface font = Typeface.createFromAsset(getApplication().getAssets(), "fonts/lobster.ttf");
 
+        DatabaseHandler.getInstance(PlyoWorkout.this).createTest(new Test(message));
+
+        j = 1;
+        n = 1;
+
+        exercise1.setTypeface(font);
+        exercise1.setText("Congragulations");
         counter.setText("");
         exercise2.setText("");
-        exercise1.setText("THE END");
-        db = DatabaseHandler.getInstance(PlyoWorkout.this);
-        db.createTest(new Test(message));
+
+        video.setVisibility(View.GONE);
+        pause.setVisibility(View.GONE);
+        resume.setVisibility(View.GONE);
+
+        repeatWorkout.setVisibility(View.VISIBLE);
+        changeWorkout.setVisibility(View.VISIBLE);
+        share.setVisibility(View.VISIBLE);
+
+
     }
 
-    public void startCounter(){
+    public void startCounter(final String[] array){
         //start.setText("PAUSE");
         pause.setEnabled(true);
         pause.setVisibility(View.VISIBLE);
@@ -389,18 +362,6 @@ public class PlyoWorkout extends AppCompatActivity {
 
                     Log.d("ANASS", "isSpeaking?= " + tts.isSpeaking() + "; isReady?=" + ttsReady + ";  Time: " + timeRemaining);
 
-                    String[] array ;
-                    array = new String[]{
-                            "Exercise 1",
-                            "Exercise 2",
-                            "Exercise 3",
-                            "Exercise 4",
-                            "Exercise 5",
-                            "Exercise 6",
-                            "Exercise 7",
-                            "Exercise 8",
-                            "Exercise 9"};
-
                     speaking(array);
 
                     textCounting(millisUntilFinished, array);
@@ -418,7 +379,7 @@ public class PlyoWorkout extends AppCompatActivity {
 
     }
 
-    public void resumeCounter(){
+    public void resumeCounter(final String[] array){
         resume.setEnabled(false);
         resume.setVisibility((View.GONE));
         pause.setEnabled(true);
@@ -430,7 +391,7 @@ public class PlyoWorkout extends AppCompatActivity {
         //Initialize a new CountDownTimer instance
         final long millisInFuture = timeRemaining;
 
-        timer = new CountDownTimer(millisInFuture, interval) {
+        timer = new CountDownTimer(millisInFuture, INTERVAL) {
             /**
              * Callback fired on regular interval.
              *
@@ -446,18 +407,6 @@ public class PlyoWorkout extends AppCompatActivity {
                     //Put count down timer remaining time in a variable
                     timeRemaining = millisUntilFinished;
 
-                    String[] array ;
-                    array = new String[]{
-                            "Exercise 1",
-                            "Exercise 2",
-                            "Exercise 3",
-                            "Exercise 4",
-                            "Exercise 5",
-                            "Exercise 6",
-                            "Exercise 7",
-                            "Exercise 8",
-                            "Exercise 9",
-                            "Exercice 10"};
 
                     speaking(array);
 
@@ -499,6 +448,8 @@ public class PlyoWorkout extends AppCompatActivity {
         }
     }
 
+
+
     public class Task extends AsyncTask<String, String, String> {
 
         @Override
@@ -520,7 +471,7 @@ public class PlyoWorkout extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             spinner.setVisibility(View.GONE);
-            startCounter();
+            startCounter(workouts);
         }
     }
 
