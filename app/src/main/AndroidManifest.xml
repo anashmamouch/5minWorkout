@@ -8,21 +8,56 @@
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:screenOrientation="portrait">
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".instructions.PlyoCardio"/>
-        <activity android:name=".instructions.FatCardio"/>
-        <activity android:name=".workouts.PlyoWorkout"/>
-        <activity android:name=".SettingsActivity"/>
+        <!--Instructions activities-->
+        <activity
+            android:name=".instructions.PlyoCardioInstruction"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".instructions.FatCardioInstruction"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".instructions.AbsInstruction"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".instructions.LegInstruction"
+            android:screenOrientation="portrait"/>
+
+        <!--Workouts activities-->
+        <activity
+            android:name=".workouts.PlyoCardioWorkout"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".workouts.FatCardioWorkout"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".workouts.AbsWorkout"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".workouts.LegWorkout"
+            android:screenOrientation="portrait"/>
+
+        <!--Settings activity-->
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait"/>
+
+        <!--Settings activity-->
+        <activity
+            android:name=".AboutActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

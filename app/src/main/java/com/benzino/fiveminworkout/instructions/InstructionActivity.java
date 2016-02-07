@@ -1,5 +1,6 @@
 package com.benzino.fiveminworkout.instructions;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,8 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.benzino.fiveminworkout.AboutActivity;
 import com.benzino.fiveminworkout.Model;
 import com.benzino.fiveminworkout.R;
+import com.benzino.fiveminworkout.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +86,32 @@ public abstract class InstructionActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+            return true;
+        }
+        else if(id == R.id.action_share) {
+            String link = "this is a link";
+            String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + link;
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT, message);
+            startActivity(Intent.createChooser(share, "Share 5 minute Workout"));
+
+            return true;
+        }
+        else if(id == R.id.action_feedback){
+            Intent Email = new Intent(Intent.ACTION_SEND);
+            Email.setType("text/email");
+            Email.putExtra(Intent.EXTRA_EMAIL, new String[] { "benzinoanas@gmail.com" });
+            Email.putExtra(Intent.EXTRA_SUBJECT, "Feedback 5min Workout app");
+            Email.putExtra(Intent.EXTRA_TEXT, "Dear Developer," + "\n");
+            startActivity(Intent.createChooser(Email, "Send Feedback:"));
+
+            return true;
+        }
+        else if(id == R.id.action_about){
+            startActivity(new Intent(this, AboutActivity.class));
             return true;
         }
 

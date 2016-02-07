@@ -2,30 +2,22 @@ package com.benzino.fiveminworkout;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.benzino.fiveminworkout.fragments.ProgressFragment;
-import com.benzino.fiveminworkout.instructions.FatCardio;
-import com.benzino.fiveminworkout.instructions.PlyoCardio;
-import com.benzino.fiveminworkout.workouts.PlyoWorkout;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
-import com.prolificinteractive.materialcalendarview.DayViewFacade;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+import com.benzino.fiveminworkout.instructions.AbsInstruction;
+import com.benzino.fiveminworkout.instructions.FatCardioInstruction;
+import com.benzino.fiveminworkout.instructions.LegInstruction;
+import com.benzino.fiveminworkout.instructions.PlyoCardioInstruction;
+import com.benzino.fiveminworkout.workouts.AbsWorkout;
+import com.benzino.fiveminworkout.workouts.FatCardioWorkout;
+import com.benzino.fiveminworkout.workouts.LegWorkout;
+import com.benzino.fiveminworkout.workouts.PlyoCardioWorkout;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -61,27 +53,28 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
             @Override
             public void onClick(View v) {
                 if(position == 0){
-                    context.startActivity(new Intent(context, PlyoCardio.class));
+                    context.startActivity(new Intent(context, PlyoCardioInstruction.class));
                 }else if(position == 1){
-                    context.startActivity(new Intent(context, FatCardio.class));
+                    context.startActivity(new Intent(context, FatCardioInstruction.class));
+                }else if(position == 2){
+                    context.startActivity(new Intent(context, AbsInstruction.class));
+                }else if(position == 3){
+                    context.startActivity(new Intent(context, LegInstruction.class));
                 }
-
             }
         });
         holder.vStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position ==0 ){
-                    context.startActivity(new Intent(context, PlyoWorkout.class));
-                    Toast.makeText(context, "START WORKOUT # 1" , Toast.LENGTH_LONG).show();
-                }else if(position == 1 ){
-                    Toast.makeText(context, "START WORKOUT # 2" , Toast.LENGTH_LONG).show();
-                }else if(position == 2 ){
-                    Toast.makeText(context, "START WORKOUT # 3" , Toast.LENGTH_LONG).show();
-                }else {
-                    Toast.makeText(context, "START FOREVER" , Toast.LENGTH_LONG).show();
+                if(position ==0){
+                    context.startActivity(new Intent(context, PlyoCardioWorkout.class));
+                }else if(position == 1){
+                    context.startActivity(new Intent(context, FatCardioWorkout.class));
+                }else if(position == 2){
+                    context.startActivity(new Intent(context, AbsWorkout.class));
+                }else if(position == 3){
+                    context.startActivity(new Intent(context, LegWorkout.class));
                 }
-
             }
         });
 

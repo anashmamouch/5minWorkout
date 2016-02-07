@@ -39,7 +39,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.PlyoCardio
         holder.descTextView.setText(item.mDescription);
         holder.videoButton.setText("VIDEO");
 
-        if(context.getClass().getSimpleName().equals(FatCardio.class.getSimpleName())){
+        if(context.getClass().getSimpleName().equals(FatCardioInstruction.class.getSimpleName())){
             if (position == 2){
                 holder.videoButton.setText("LOLOLO");
             }

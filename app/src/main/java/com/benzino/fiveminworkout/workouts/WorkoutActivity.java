@@ -1,23 +1,20 @@
 package com.benzino.fiveminworkout.workouts;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,15 +26,14 @@ import com.benzino.fiveminworkout.DatabaseHandler;
 import com.benzino.fiveminworkout.R;
 import com.benzino.fiveminworkout.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by Anas on 31/1/16.
+ * Created on 31/1/16.
+ * @author Anas
  */
-public class PlyoWorkout extends AppCompatActivity implements View.OnClickListener{
+public abstract class WorkoutActivity extends AppCompatActivity implements View.OnClickListener{
 
     private TextView counter;
     private TextView exercise1;
@@ -50,10 +46,12 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
     private Button pause;
     private ProgressBar spinner;
 
-    private long TOTAL_TIME = 300000; //5 minutes Workout
-    private long EXERCISE_TIME = 7000; // 20seconds exercice time
+    private PowerManager.WakeLock mWakeLock;
+
+    private long TOTAL_TIME; //5 minutes Workout
+    private long EXERCISE_TIME = 20000; // 20seconds exercice time default value
     private long INTERVAL = 1000; // 1second interval
-    private long REST_TIME = 7000; // 10seconds rest time
+    private long REST_TIME = 10000; // 10seconds rest time default value
 
     private int n = 1;//variables used to change textView counter
     private int j = 1;
@@ -66,52 +64,38 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
 
     private TextToSpeech tts;//text to speech allows speaking while counting
 
-    private volatile boolean ttsReady = false;//waits for text to speach to initialize
+    private boolean ttsReady = false;//waits for text to speach to initialize
 
-    private String[] workouts;
+    protected String[] workouts;
 
     private long startTime;
     private long launchTime;
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plyoworkout);
+
         //Keeping the device awake during the workout
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        mWakeLock.acquire();
+        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "MyTag");
 
+        initToolbar();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.workout_toolbar);
-        toolbar.setTitle("Plyometric Cardio");
+        initTextToSpeech();
 
-        Typeface font = Typeface.createFromAsset(getApplication().getAssets(), "fonts/Roboto-Thin.ttf");
+        setSharedPreferences();
 
-        toolbar.setNavigationIcon(R.mipmap.ic_arrow_left_white_24dp);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-
-            @Override
-            public void onInit(final int status) {
-              tts.setLanguage(Locale.US);
-            }
-        });
+        setExercises();
 
         counter = (TextView) findViewById(R.id.counter);
-        counter.setTypeface(font);
+        counter.setTypeface(Typeface.createFromAsset(getApplication().getAssets(), "fonts/Roboto-Thin.ttf"));
 
         exercise1 = (TextView) findViewById(R.id.first_exercice);
+        exercise1.setText(workouts[0]);
 
         exercise2 = (TextView) findViewById(R.id.second_exercice);
+        exercise2.setText("Next: " + workouts[1]);
 
         video = (ImageView) findViewById(R.id.video_icon);
         video.setVisibility(View.GONE);
@@ -136,22 +120,6 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         spinner = (ProgressBar) findViewById(R.id.spinner);
         spinner.setVisibility(View.GONE);
 
-        workouts = new String[]{
-                "Exercise 1",
-                "Exercise 2",
-                "Exercise 3",
-                "Exercise 4",
-                "Exercise 5",
-                "Exercise 6",
-                "Exercise 7",
-                "Exercise 8",
-                "Exercise 9",
-                "Exercise 10",
-                " "};
-
-        exercise1.setText(workouts[0]);
-        exercise2.setText("Next: " + workouts[1]);
-
         counter.setOnClickListener(this);
         pause.setOnClickListener(this);
         resume.setOnClickListener(this);
@@ -170,40 +138,118 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         if (view.getId() == R.id.counter){
             counter.setEnabled(false);
             launchTime = System.currentTimeMillis();
-
-            initializeTextToSpeech();
+            this.mWakeLock.acquire();
 
             new Task().execute();
         }
-        if (view.getId() == R.id.counter_button_pause)
+        if (view.getId() == R.id.counter_button_pause){
+            this.mWakeLock.release();
             pauseCounter();
+        }
 
-        if (view.getId() == R.id.counter_button_resume)
+        if (view.getId() == R.id.counter_button_resume){
+            this.mWakeLock.acquire();
             resumeCounter(workouts);
+        }
 
         if(view.getId() == R.id.repeat_workout){
             finish();
-            startActivity(new Intent(PlyoWorkout.this, PlyoWorkout.class));
+            startActivity(new Intent(WorkoutActivity.this, WorkoutActivity.class));
         }
         if (view.getId() == R.id.change_workout)
             onBackPressed();
 
-        if (view.getId() == R.id.share_workout)
-            Toast.makeText(this, "SHARE ME ", Toast.LENGTH_SHORT).show();
+        if (view.getId() == R.id.share_workout){
+            String link = "this is a link";
+            String message = "I just finished my "+setToolbarTitle()+" and i feel great thanks to this awesome app.\nDownload it from here: \n" + link;
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT, message);
+
+            startActivity(Intent.createChooser(share, "Share your "+setToolbarTitle()));
+        }
+
     }
 
-    public void initializeTextToSpeech(){
-        Bundle bundle = new Bundle();
-        bundle.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
+    /**
+     * Used to set the title of the toolbar
+     * @return the title of the toolbar
+     */
+    protected abstract String setToolbarTitle();
 
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
+    /**
+     * Used to set the array of exercices
+     */
+    protected abstract void setExercises();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            tts.speak(" ", TextToSpeech.QUEUE_FLUSH, bundle, "ANAS");
-        }else{
-            tts.speak(" ", TextToSpeech.QUEUE_FLUSH, hashMap);
+    /**
+     * Sets the type of the workout
+     * @return type of the workout
+     */
+    protected abstract String setType();
+
+    /*
+    * Creates and initialise the toolbar
+    * */
+    public void initToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.workout_toolbar);
+        toolbar.setTitle(setToolbarTitle());
+
+        toolbar.setNavigationIcon(R.mipmap.ic_arrow_left_white_24dp);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    /**
+    * Get the preferences chosen on the settings page
+    * */
+    public void setSharedPreferences(){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        if(sp != null){
+            Toast.makeText(this, "Exercice time : " + sp.getInt("exercise_time", 20) + " seconds", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Rest time : " + sp.getInt("rest_time", 10)+ " seconds", Toast.LENGTH_LONG).show();
+
+            if(!sp.getBoolean("enable_audio", true)){
+                ttsReady = true;
+                tts.stop();
+                tts.shutdown();
+            }
+
+            EXERCISE_TIME = sp.getInt("exercise_time", 20) * INTERVAL;
+            REST_TIME = sp.getInt("rest_time", 10) * INTERVAL;
         }
+    }
+
+    /**
+    * Creates and initialise the text to speech feature
+    * */
+    @SuppressWarnings("deprecation")
+    public void initTextToSpeech(){
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+
+            @Override
+            public void onInit(final int status) {
+                Bundle bundle = new Bundle();
+                bundle.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
+
+                tts.setLanguage(Locale.US);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    tts.speak(" ", TextToSpeech.QUEUE_FLUSH, bundle, "ANAS");
+                }else{
+                    tts.speak(" ", TextToSpeech.QUEUE_FLUSH, hashMap);
+                }
+            }
+        });
 
         tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
@@ -226,16 +272,24 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         });
     }
 
+    /**
+    * Used to make the device speak the message
+    *
+    * @param message the string that we want to say
+    * @param queue the type of queue for the text to speech
+    * */
     @SuppressWarnings("deprecation")
     public void speak(String message, int queue ){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tts.speak(message, queue, null, null);
-            //tts.stop();
         }else{
             tts.speak(message, queue, null);
         }
     }
 
+    /**
+     * Called when we want text to speech to be silent
+     */
     @SuppressWarnings("deprecation")
     public void silent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -245,6 +299,11 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    /**
+     * This method simply make the device say the countdown from 3 to 1
+     *
+     * @param message the message we want to say at the end of the countdown
+     */
     public void speakCountdown(String message){
         speak("3", TextToSpeech.QUEUE_ADD);
         silent();
@@ -253,6 +312,11 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         speak("1. "+message, TextToSpeech.QUEUE_ADD);
     }
 
+    /**
+     * Model for the text to speech to talk all
+     *
+     * @param array the exercises we want the device to say
+     */
     public void speaking(String[] array) {
 
         if(timeRemaining < (TOTAL_TIME) && (TOTAL_TIME - 400) <=timeRemaining){
@@ -274,6 +338,12 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    /**
+     * Model for the countdown timer
+     *
+     * @param array the array of exercises
+     * @param millisUntilFinished milliseconds until the countdown is done
+     */
     public void textCounting(long millisUntilFinished, String[] array) {
         if (timeRemaining < TOTAL_TIME
                 && (TOTAL_TIME - EXERCISE_TIME) <= timeRemaining) {
@@ -309,10 +379,13 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    public void done(String message) {
+    /**
+     * Called when the countdown timer is done
+     */
+    public void done() {
         Typeface font = Typeface.createFromAsset(getApplication().getAssets(), "fonts/lobster.ttf");
 
-        DatabaseHandler.getInstance(PlyoWorkout.this).createTest(new Test(message));
+        DatabaseHandler.getInstance(WorkoutActivity.this).createTest(new Test(setType()));
 
         j = 1;
         n = 1;
@@ -329,12 +402,14 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         repeatWorkout.setVisibility(View.VISIBLE);
         changeWorkout.setVisibility(View.VISIBLE);
         share.setVisibility(View.VISIBLE);
-
-
     }
 
+    /**
+     * Method used to start and initiate countdown time
+     *
+     * @param array array of exercises
+     */
     public void startCounter(final String[] array){
-        //start.setText("PAUSE");
         pause.setEnabled(true);
         pause.setVisibility(View.VISIBLE);
 
@@ -373,12 +448,16 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
              */
             @Override
             public void onFinish() {
-                   done("PLYO");
+                   done();
             }
         }.start();
-
     }
 
+    /**
+     * Called when we want to resume the counter after a pause
+     *
+     * @param array the array of exercises
+     */
     public void resumeCounter(final String[] array){
         resume.setEnabled(false);
         resume.setVisibility((View.GONE));
@@ -386,7 +465,6 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         pause.setVisibility(View.VISIBLE);
 
         isPaused = false;
-
 
         //Initialize a new CountDownTimer instance
         final long millisInFuture = timeRemaining;
@@ -419,12 +497,15 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
              */
             @Override
             public void onFinish() {
-                done("PLYO");
+                done();
             }
         }.start();
 
     }
 
+    /**
+     * Called when we want to pause the countdown timer
+     */
     public void pauseCounter(){
         isPaused = true;
 
@@ -438,18 +519,26 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //release wakelock
+        this.mWakeLock.release();
+
+        //stop and shutdown text to speech
         if(tts != null){
             tts.stop();
             tts.shutdown();
         }
+
+        //stop the countdown timer
         if(timer !=null){
             timer.cancel();
             timer = null;
         }
     }
 
-
-
+    /**
+     * Class Task used to synchronize between the text to speech
+     * and the countdown timer
+     */
     public class Task extends AsyncTask<String, String, String> {
 
         @Override
@@ -475,25 +564,4 @@ public class PlyoWorkout extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

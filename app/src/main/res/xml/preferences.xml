@@ -3,29 +3,33 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <EditTextPreference
-        android:title="Your Name"
-        android:key="username"
-        android:summary="Please provide your username"/>
-
-    <CheckBoxPreference
-        android:title="Application Updates"
-        android:defaultValue="false"
-        android:summary="This option if selected will allow the application to check for latest versions."
-        android:key="applicationUpdates" />
-
-    <ListPreference
-        android:title="Download Details"
-        android:summary="Select the kind of data that you would like to download"
-        android:key="downloadType"
-        android:defaultValue="1"
-        android:entries="@array/listArray"
-        android:entryValues="@array/listValues" />
+    <com.vanniktech.vntnumberpickerpreference.VNTNumberPickerPreference
+        android:defaultValue="20"
+        android:key="exercise_time"
+        android:title="Exercice time in seconds"
+        app:vnt_maxValue="60"
+        app:vnt_minValue="10"
+        app:vnt_setWrapSelectorWheel="true"/>
 
     <com.vanniktech.vntnumberpickerpreference.VNTNumberPickerPreference
-        android:defaultValue="21"
-        android:key="preference_number"
-        android:title="title"
+        android:defaultValue="10"
+        android:key="rest_time"
+        android:title="Rest time in seconds"
+        app:vnt_maxValue="30"
+        app:vnt_minValue="5"
         app:vnt_setWrapSelectorWheel="true"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="enable_audio"
+        android:title="Audio"/>
+
+    <Preference
+        android:title="Feedback"
+        android:key="feedback" />
+
+    <Preference
+        android:title="Share with friends"
+        android:key="share" />
 
 </PreferenceScreen>

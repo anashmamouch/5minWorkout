@@ -1,6 +1,7 @@
 package com.benzino.fiveminworkout;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.vanniktech.vntnumberpickerpreference.VNTNumberPickerPreference;
 
 import java.util.List;
 
@@ -42,7 +45,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         String strUserName = sp.getString("username", "NA");
-        boolean bAppUpdates = sp.getBoolean("applicationUpdates",false);
+        boolean bAppUpdates = sp.getBoolean("applicationUpdates", false);
         String downloadType = sp.getString("downloadType", "1");
         int anass = sp.getInt("preference_value", 0);
 
@@ -57,7 +60,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        anas = sharedPreferences.getInt("preference_number", 12);
+        anas = sharedPreferences.getInt("exercise_time", 12);
     }
 
     @Override
@@ -75,20 +78,39 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment {
-        private Preference preference;
-        private int value;
+        private Preference feedback;
+        private Preference share;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-            preference = this.findPreference("preference_number");
-            preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            feedback = this.findPreference("feedback");
+            feedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    value = (int) newValue;
-                    Toast.makeText(getActivity(), "New value is " + value, Toast.LENGTH_SHORT).show();
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent Email = new Intent(Intent.ACTION_SEND);
+                    Email.setType("text/email");
+                    Email.putExtra(Intent.EXTRA_EMAIL, new String[] { "benzinoanas@gmail.com" });
+                    Email.putExtra(Intent.EXTRA_SUBJECT, "Feedback 5min Workout app");
+                    Email.putExtra(Intent.EXTRA_TEXT, "Dear Developer," + "\n");
+                    startActivity(Intent.createChooser(Email, "Send Feedback:"));
+
+                    return true;
+                }
+            });
+
+            share = this.findPreference("share");
+            share.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    String link = "this is a link";
+                    String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + link;
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("text/plain");
+                    share.putExtra(Intent.EXTRA_TEXT, message);
+                    startActivity(Intent.createChooser(share, "Share 5 minute Workout"));
 
                     return true;
                 }
