@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benzino.fiveminworkout.DatabaseHandler;
+import com.benzino.fiveminworkout.MyCountDownTimer;
 import com.benzino.fiveminworkout.R;
 import com.benzino.fiveminworkout.Test;
 
@@ -58,7 +59,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
     private boolean isPaused = false;//boolean used to pause the counter
 
-    private CountDownTimer timer;//countdown timer used to calculate time remaining for the workout
+    private MyCountDownTimer timer;//countdown timer used to calculate time remaining for the workout
 
     private long timeRemaining = 0;//variable to store the remaining time and use it to resume timer
 
@@ -76,9 +77,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plyoworkout);
 
-        //Keeping the device awake during the workout
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "MyTag");
+        initWakeLock();
 
         initToolbar();
 
@@ -138,12 +137,14 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         if (view.getId() == R.id.counter){
             counter.setEnabled(false);
             launchTime = System.currentTimeMillis();
-            this.mWakeLock.acquire();
+            mWakeLock.acquire();
 
             new Task().execute();
         }
         if (view.getId() == R.id.counter_button_pause){
-            this.mWakeLock.release();
+            if (mWakeLock.isHeld()){
+                mWakeLock.release();
+            }
             pauseCounter();
         }
 
@@ -154,7 +155,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
         if(view.getId() == R.id.repeat_workout){
             finish();
-            startActivity(new Intent(WorkoutActivity.this, WorkoutActivity.class));
+            startActivity(new Intent(getApplicationContext(), getClass()));
         }
         if (view.getId() == R.id.change_workout)
             onBackPressed();
@@ -166,9 +167,20 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_TEXT, message);
 
-            startActivity(Intent.createChooser(share, "Share your "+setToolbarTitle()));
+            startActivity(Intent.createChooser(share, "Share your " + setToolbarTitle()));
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mWakeLock.isHeld()){
+            mWakeLock.release();
+        }
+
+        if(!timer.mPaused)
+            pauseCounter();
     }
 
     /**
@@ -187,6 +199,15 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
      * @return type of the workout
      */
     protected abstract String setType();
+
+    public void initWakeLock(){
+
+            //Keeping the device awake during the workout
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "MyTag");
+
+
+    }
 
     /*
     * Creates and initialise the toolbar
@@ -319,11 +340,11 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
      */
     public void speaking(String[] array) {
 
-        if(timeRemaining < (TOTAL_TIME) && (TOTAL_TIME - 400) <=timeRemaining){
+        if(timer.mMillisLeft < (TOTAL_TIME) && (TOTAL_TIME - INTERVAL) <=timer.mMillisLeft){
             speak("Start " + array[0], TextToSpeech.QUEUE_ADD);
         }
-        if(timeRemaining <(TOTAL_TIME - n * EXERCISE_TIME -  (n - 1) * REST_TIME - INTERVAL + 4000)
-                && (TOTAL_TIME - n * EXERCISE_TIME - (n - 1) * REST_TIME - INTERVAL + 3700)<=timeRemaining && REST_TIME !=0){
+        if(timer.mMillisLeft <(TOTAL_TIME - n * EXERCISE_TIME -  (n - 1) * REST_TIME + 3.3 * INTERVAL)
+                && (TOTAL_TIME - n * EXERCISE_TIME - (n - 1) * REST_TIME + 2.3 * INTERVAL )<=timer.mMillisLeft && REST_TIME !=0){
 
             if (n == (array.length - 1)){
                 speakCountdown("Your workout is done for today");
@@ -331,11 +352,17 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
                 speakCountdown("Take a Rest. " + (REST_TIME / 1000) + " seconds");
             }
         }
-        if(timeRemaining <(TOTAL_TIME - n * EXERCISE_TIME -  n * REST_TIME - INTERVAL+ 4000)
-                && (TOTAL_TIME - n * EXERCISE_TIME - n * REST_TIME - INTERVAL + 3700)<=timeRemaining ){
+        if(timer.mMillisLeft <(TOTAL_TIME - n * EXERCISE_TIME -  n * REST_TIME + 3.3 * INTERVAL)
+                && (TOTAL_TIME - n * EXERCISE_TIME - n * REST_TIME + 2.3 * INTERVAL)<=timer.mMillisLeft ){
             speakCountdown("Start " + array[n]);
             n++ ;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("ANASTOP", "+++++++++++ WorkoutActivity is stopped ++++++++++++");
     }
 
     /**
@@ -345,21 +372,21 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
      * @param millisUntilFinished milliseconds until the countdown is done
      */
     public void textCounting(long millisUntilFinished, String[] array) {
-        if (timeRemaining < TOTAL_TIME
-                && (TOTAL_TIME - EXERCISE_TIME) <= timeRemaining) {
+        if (timer.mMillisLeft < TOTAL_TIME
+                && (TOTAL_TIME - EXERCISE_TIME) <= timer.mMillisLeft) {
             counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - EXERCISE_TIME - INTERVAL)) / INTERVAL));
             exercise1.setText(array[0]);
             exercise2.setText("Next: "+ array[1]);
             video.setVisibility(View.VISIBLE);
         }
-        if (timeRemaining < (TOTAL_TIME - j * EXERCISE_TIME - (j - 1) * REST_TIME)
-                && (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME) <= timeRemaining) {
+        if (timer.mMillisLeft < (TOTAL_TIME - j * EXERCISE_TIME - (j - 1) * REST_TIME)
+                && (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME) <= timer.mMillisLeft) {
             counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME - INTERVAL)) / INTERVAL ));
             exercise1.setText("REST");
             video.setVisibility(View.GONE);
         }
-        if (timeRemaining < (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME)
-                && (TOTAL_TIME - (j + 1) * EXERCISE_TIME - j * REST_TIME) <= timeRemaining) {
+        if (timer.mMillisLeft < (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME)
+                && (TOTAL_TIME - (j + 1) * EXERCISE_TIME - j * REST_TIME) <= timer.mMillisLeft) {
 
             counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - (j+ 1) * EXERCISE_TIME - j * REST_TIME - INTERVAL)) / INTERVAL));
             exercise1.setText(array[j]);
@@ -373,7 +400,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             }
         }
 
-        if ( timeRemaining < (TOTAL_TIME - (j + 1) * EXERCISE_TIME - j * REST_TIME + INTERVAL)){
+        if ( timer.mMillisLeft < (TOTAL_TIME - (j + 1) * EXERCISE_TIME - j * REST_TIME + INTERVAL)){
             j++;
             Log.d("ANASTORM", "Array = "+array[j]+"; Value of j = " + j +"; Value of n = "+ n );
         }
@@ -415,34 +442,28 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
         TOTAL_TIME = 10 * EXERCISE_TIME + 9 * REST_TIME;
 
-        timer = new CountDownTimer(TOTAL_TIME, INTERVAL) {
+        timer = new MyCountDownTimer(TOTAL_TIME, INTERVAL) {
 
             /**
              * Callback fired on regular interval.
              *
              * @param millisUntilFinished The amount of time until finished.
              */
+
             @Override
             public void onTick(long millisUntilFinished) {
-                if(isPaused){
 
-                    cancel();
-                }else {
-
-                    //Put the countdown remaining time in a variable
-                    timeRemaining = millisUntilFinished;
+                    Log.d("ANASTIME", "Milliseconds left: "+ timer.mMillisLeft);
                     //Display the remaining seconds to app interface
                     //1 second = 1000 milliseconds
-                    counter.setText("" + (millisUntilFinished / 1000));
+                    counter.setText("");
 
-                    Log.d("ANASS", "isSpeaking?= " + tts.isSpeaking() + "; isReady?=" + ttsReady + ";  Time: " + timeRemaining);
+                    Log.d("ANASS", "isSpeaking?= " + tts.isSpeaking() + "; isReady?=" + ttsReady + ";  Time: " + timer.mMillisLeft);
 
                     speaking(array);
 
                     textCounting(millisUntilFinished, array);
-
                 }
-            }
             /**
              * Callback fired when the time is up.
              */
@@ -464,50 +485,17 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         pause.setEnabled(true);
         pause.setVisibility(View.VISIBLE);
 
-        isPaused = false;
-
-        //Initialize a new CountDownTimer instance
-        final long millisInFuture = timeRemaining;
-
-        timer = new CountDownTimer(millisInFuture, INTERVAL) {
-            /**
-             * Callback fired on regular interval.
-             *
-             * @param millisUntilFinished The amount of time until finished.
-             */
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if(isPaused){
-
-                    cancel();
-                }else{
-                    counter.setText("" + ((millisUntilFinished)/1000));
-                    //Put count down timer remaining time in a variable
-                    timeRemaining = millisUntilFinished;
-
-
-                    speaking(array);
-
-                    textCounting(millisUntilFinished, array);
-                }
-            }
-
-            /**
-             * Callback fired when the time is up.
-             */
-            @Override
-            public void onFinish() {
-                done();
-            }
-        }.start();
-
+        //Resumes the timer
+        timer.resume();
     }
 
     /**
      * Called when we want to pause the countdown timer
      */
     public void pauseCounter(){
-        isPaused = true;
+        timer.pause();
+
+        Log.d("ANAS", "Pause button pressed");
 
         pause.setEnabled(false);
         pause.setVisibility(View.GONE);
@@ -520,7 +508,8 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     protected void onDestroy() {
         super.onDestroy();
         //release wakelock
-        this.mWakeLock.release();
+        if(mWakeLock.isHeld())
+            mWakeLock.release();
 
         //stop and shutdown text to speech
         if(tts != null){
@@ -549,7 +538,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
         @Override
         protected String doInBackground(String... params) {
-
+            //waits until the text to speech is ready
             while(!ttsReady){
 
             }
