@@ -12,10 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.benzino.fiveminworkout.AboutActivity;
-import com.benzino.fiveminworkout.Model;
+import com.benzino.fiveminworkout.activities.AboutActivity;
+import com.benzino.fiveminworkout.data.Model;
 import com.benzino.fiveminworkout.R;
-import com.benzino.fiveminworkout.SettingsActivity;
+import com.benzino.fiveminworkout.activities.SettingsActivity;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.List;
 public abstract class InstructionActivity extends AppCompatActivity {
 
     protected List<Model> list;
+    AdView mAdView;
 
     int anas;
 
@@ -33,6 +36,10 @@ public abstract class InstructionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instruction);
+
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         anas = sp.getInt("preference_number", 0);
@@ -65,6 +72,32 @@ public abstract class InstructionActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
+    }
+    /** Called when leaving the activity */
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+    /** Called when returning to the activity */
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    /** Called before the activity is destroyed */
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 
     protected abstract String setToolbarTitle();

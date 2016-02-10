@@ -1,4 +1,4 @@
-package com.benzino.fiveminworkout;
+package com.benzino.fiveminworkout.helpers;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -10,13 +10,13 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 /**
  * Created by Anas on 28/1/16.
  */
-public class CustomViewPager extends ViewPager {
+public class MyViewPager extends ViewPager {
 
-    public CustomViewPager(Context context) {
+    public MyViewPager(Context context) {
         super(context);
     }
 
-    public CustomViewPager(Context context, AttributeSet attrs) {
+    public MyViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -27,5 +27,7 @@ public class CustomViewPager extends ViewPager {
         }
         return super.canScroll(v, checkV, dx, x, y);
     }
+
+
 
 }

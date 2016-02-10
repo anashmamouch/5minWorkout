@@ -1,24 +1,30 @@
-package com.benzino.fiveminworkout;
+package com.benzino.fiveminworkout.activities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
+import com.benzino.fiveminworkout.MyApplication;
+import com.benzino.fiveminworkout.R;
 import com.benzino.fiveminworkout.fragments.ProgressFragment;
 import com.benzino.fiveminworkout.fragments.WorkoutFragment;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +33,16 @@ import java.util.List;
  * Created by Anas on 23/1/16.
  */
 public class MainActivity extends AppCompatActivity {
+    private Tracker mTracker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Analytics
+        // Obtain the shared Tracker instance.
+        MyApplication application = (MyApplication) getApplication();
+        mTracker = application.getDefaultTracker();
 
         //Creating the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -52,8 +63,31 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Assign the ViewPager View and setting the adapter
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
+
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                String name = (String) pager.getAdapter().getPageTitle(position);
+
+                // [START screen_view_hit]
+                Log.i("ANASANALYTICS", "Setting screen name: " + name);
+                mTracker.setScreenName("Image~" + name);
+                mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
 
         //Setting the ViewPager for the TabLayout
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -87,10 +121,13 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() {
             return fragmentList.size();
         }
+
+
         @Override
         public CharSequence getPageTitle(int position) {
             return fragmentTitleList.get(position);
         }
+
     }
 
     @Override

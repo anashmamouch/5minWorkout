@@ -1,32 +1,18 @@
 package com.benzino.fiveminworkout.fragments;
 
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.benzino.fiveminworkout.MainActivity;
-import com.benzino.fiveminworkout.Model;
-import com.benzino.fiveminworkout.MyAdapter;
+import com.benzino.fiveminworkout.data.Model;
+import com.benzino.fiveminworkout.helpers.MyAdapter;
 import com.benzino.fiveminworkout.R;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
-import com.prolificinteractive.materialcalendarview.DayViewFacade;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -39,6 +25,7 @@ public class WorkoutFragment extends android.support.v4.app.Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         initData();
     }

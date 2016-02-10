@@ -1,42 +1,40 @@
-package com.benzino.fiveminworkout;
+package com.benzino.fiveminworkout.activities;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.vanniktech.vntnumberpickerpreference.VNTNumberPickerPreference;
-
-import java.util.List;
+import com.benzino.fiveminworkout.R;
+import com.benzino.fiveminworkout.helpers.MyPreferenceActivity;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 /**
  * Created by Anas on 4/2/16.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class SettingsActivity extends MyPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     SharedPreferences sp;
     int anas;
+    AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        //ADS
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new MyPreferenceFragment())
@@ -68,6 +66,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         super.onResume();
         // Set up a listener whenever a key changes
         sp.registerOnSharedPreferenceChangeListener(this);
+        if (mAdView != null) {
+            mAdView.resume();
+        }
     }
 
     @Override
@@ -75,7 +76,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         super.onPause();
         // Unregister the listener whenever a key changes
         sp.unregisterOnSharedPreferenceChangeListener(this);
+
+        if (mAdView != null) {
+            mAdView.pause();
+        }
     }
+
+    /** Called before the activity is destroyed */
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
+    }
+
 
     public static class MyPreferenceFragment extends PreferenceFragment {
         private Preference feedback;
@@ -124,7 +139,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View layout = inflater.inflate(R.layout.activity_settings, container, false);
             if (layout != null) {
-                AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity) getActivity();
+                MyPreferenceActivity activity = (MyPreferenceActivity) getActivity();
 
                 /**
                  * Settings Toolbar

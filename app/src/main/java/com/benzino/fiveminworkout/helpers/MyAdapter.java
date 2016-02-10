@@ -1,4 +1,4 @@
-package com.benzino.fiveminworkout;
+package com.benzino.fiveminworkout.helpers;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.benzino.fiveminworkout.data.Model;
+import com.benzino.fiveminworkout.R;
 import com.benzino.fiveminworkout.instructions.AbsInstruction;
 import com.benzino.fiveminworkout.instructions.FatCardioInstruction;
 import com.benzino.fiveminworkout.instructions.LegInstruction;

@@ -1,10 +1,8 @@
-package com.benzino.fiveminworkout;
+package com.benzino.fiveminworkout.helpers;
 
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Schedule a countdown until a time in the future, with

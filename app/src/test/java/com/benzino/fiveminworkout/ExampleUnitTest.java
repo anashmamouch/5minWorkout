@@ -1,5 +1,7 @@
 package com.benzino.fiveminworkout;
 
+import com.benzino.fiveminworkout.data.Test;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;

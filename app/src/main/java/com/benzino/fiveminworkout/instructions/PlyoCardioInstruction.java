@@ -1,19 +1,6 @@
 package com.benzino.fiveminworkout.instructions;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.benzino.fiveminworkout.Model;
-import com.benzino.fiveminworkout.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.benzino.fiveminworkout.data.Model;
 
 /**
  * Created by Anas on 28/1/16.

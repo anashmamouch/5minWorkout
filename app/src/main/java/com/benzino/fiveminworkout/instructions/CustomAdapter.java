@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.benzino.fiveminworkout.Model;
+import com.benzino.fiveminworkout.data.Model;
 import com.benzino.fiveminworkout.R;
 
 import java.util.List;

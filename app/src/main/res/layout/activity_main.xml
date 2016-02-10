@@ -43,13 +43,21 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.benzino.fiveminworkout.CustomViewPager
+    <com.benzino.fiveminworkout.helpers.MyViewPager
         android:id="@+id/pager"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center|bottom"
+        app:adSize="BANNER"
+        app:adUnitId="@string/banner_ad_unit_id" />
 
 </android.support.design.widget.CoordinatorLayout>
 

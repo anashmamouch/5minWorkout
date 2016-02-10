@@ -1,4 +1,4 @@
-package com.benzino.fiveminworkout;
+package com.benzino.fiveminworkout.helpers;
 
 /**
  * Created by Anas on 4/2/16.
@@ -38,7 +38,7 @@ import android.view.ViewGroup;
  * This technique can be used with an {@link android.app.Activity} class, not just
  * {@link android.preference.PreferenceActivity}.
  */
-public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
+public abstract class MyPreferenceActivity extends PreferenceActivity {
     private AppCompatDelegate mDelegate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

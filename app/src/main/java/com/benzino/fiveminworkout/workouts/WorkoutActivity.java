@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -22,10 +21,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.benzino.fiveminworkout.DatabaseHandler;
-import com.benzino.fiveminworkout.MyCountDownTimer;
+import com.benzino.fiveminworkout.data.DatabaseHandler;
+import com.benzino.fiveminworkout.helpers.MyCountDownTimer;
 import com.benzino.fiveminworkout.R;
-import com.benzino.fiveminworkout.Test;
+import com.benzino.fiveminworkout.data.Test;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -57,11 +58,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     private int n = 1;//variables used to change textView counter
     private int j = 1;
 
-    private boolean isPaused = false;//boolean used to pause the counter
-
     private MyCountDownTimer timer;//countdown timer used to calculate time remaining for the workout
-
-    private long timeRemaining = 0;//variable to store the remaining time and use it to resume timer
 
     private TextToSpeech tts;//text to speech allows speaking while counting
 
@@ -72,10 +69,16 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     private long startTime;
     private long launchTime;
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plyoworkout);
+
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         initWakeLock();
 
@@ -168,8 +171,11 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             share.putExtra(Intent.EXTRA_TEXT, message);
 
             startActivity(Intent.createChooser(share, "Share your " + setToolbarTitle()));
+            resume.setEnabled(false);
+            pause.setEnabled(false);
+            resume.setVisibility(View.GONE);
+            pause.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -179,8 +185,21 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             mWakeLock.release();
         }
 
-        if(!timer.mPaused)
+        if(timer!=null && !timer.mPaused)
             pauseCounter();
+
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+    }
+
+    /** Called when returning to the activity */
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
     }
 
     /**
@@ -521,6 +540,9 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         if(timer !=null){
             timer.cancel();
             timer = null;
+        }
+        if (mAdView != null) {
+            mAdView.destroy();
         }
     }
 

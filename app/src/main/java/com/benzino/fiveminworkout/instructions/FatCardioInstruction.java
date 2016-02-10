@@ -1,6 +1,6 @@
 package com.benzino.fiveminworkout.instructions;
 
-import com.benzino.fiveminworkout.Model;
+import com.benzino.fiveminworkout.data.Model;
 
 /**
  * Created by Anas on 28/1/16.

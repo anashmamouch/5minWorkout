@@ -1,4 +1,4 @@
-package com.benzino.fiveminworkout;
+package com.benzino.fiveminworkout.data;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 

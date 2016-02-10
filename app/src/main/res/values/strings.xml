@@ -5,4 +5,6 @@
     <string name="action_share">Share</string>
     <string name="action_feedback">Feedback</string>
     <string name="about_text">This is the about page</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

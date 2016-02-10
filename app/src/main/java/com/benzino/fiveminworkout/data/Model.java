@@ -1,4 +1,4 @@
-package com.benzino.fiveminworkout;
+package com.benzino.fiveminworkout.data;
 
 import java.util.ArrayList;
 import java.util.List;
