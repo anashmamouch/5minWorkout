@@ -1,5 +1,6 @@
 package com.benzino.fiveminworkout.instructions;
 
+import com.benzino.fiveminworkout.R;
 import com.benzino.fiveminworkout.data.Model;
 
 /**
@@ -10,22 +11,22 @@ import com.benzino.fiveminworkout.data.Model;
 public class LegInstruction extends InstructionActivity {
     @Override
     protected String setToolbarTitle() {
-        return "Legs";
+        return getResources().getString(R.string.leg_title);
     }
 
     @Override
     protected void addItems() {
 
-        list.add(new Model("1. EXERCICE LEG ONE" , "this is a long description of exercice one bla bla bla yes that's right"));
-        list.add(new Model("2. EXERCICE LEG TWO", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book bla bla bla yes that's right"));
-        list.add(new Model("3. EXERCICE LEG THREE", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book this is a long description of exercice one bla bla bla yes that's right"));
-        list.add(new Model("4. EXERCICE LEG FOUR", "this is a long description of exercice one bla bla bla yes that's right"));
-        list.add(new Model("5. EXERCICE LEG FIVE", "this is a long description of exercice one bla bla bla yes that's right"));
-        list.add(new Model("6. EXERCICE LEG SIX", "this is a long description of exercice one bla bla bla yes that's right"));
-        list.add(new Model("7. EXERCICE LEG SEVEN", "this is a long description of exercice one bla bla bla yes that's right"));
-        list.add(new Model("8. EXERCICE LEG EIGHT", "this is a long description of exercice one bla bla bla yes that's right"));
-        list.add(new Model("9. EXERCICE LEG NINE", "this is a long description of exercice one bla bla bla yes that's right"));
-        list.add(new Model("10. EXERCICE LEG TEN", "this is a long description of exercice one bla bla bla yes that's right"));
+        list.add(new Model("1. "+getResources().getString(R.string.leg_ex_1_title) ,getResources().getString(R.string.leg_ex_1_desc), getResources().getString(R.string.leg_ex_1_url)));
+        list.add(new Model("2. "+getResources().getString(R.string.leg_ex_2_title) ,getResources().getString(R.string.leg_ex_2_desc), getResources().getString(R.string.leg_ex_2_url)));
+        list.add(new Model("3. "+getResources().getString(R.string.leg_ex_3_title) ,getResources().getString(R.string.leg_ex_3_desc), getResources().getString(R.string.leg_ex_3_url)));
+        list.add(new Model("4. "+getResources().getString(R.string.leg_ex_4_title) ,getResources().getString(R.string.leg_ex_4_desc), getResources().getString(R.string.leg_ex_4_url)));
+        list.add(new Model("5. "+getResources().getString(R.string.leg_ex_5_title) ,getResources().getString(R.string.leg_ex_5_desc), getResources().getString(R.string.leg_ex_5_url)));
+        list.add(new Model("6. "+getResources().getString(R.string.leg_ex_6_title) ,getResources().getString(R.string.leg_ex_6_desc), getResources().getString(R.string.leg_ex_6_url)));
+        list.add(new Model("7. "+getResources().getString(R.string.leg_ex_7_title) ,getResources().getString(R.string.leg_ex_7_desc), getResources().getString(R.string.leg_ex_7_url)));
+        list.add(new Model("8. "+getResources().getString(R.string.leg_ex_8_title) ,getResources().getString(R.string.leg_ex_8_desc), getResources().getString(R.string.leg_ex_8_url)));
+        list.add(new Model("9. "+getResources().getString(R.string.leg_ex_9_title) ,getResources().getString(R.string.leg_ex_9_desc), getResources().getString(R.string.leg_ex_9_url)));
+        list.add(new Model("10. "+getResources().getString(R.string.leg_ex_10_title) ,getResources().getString(R.string.leg_ex_10_desc), getResources().getString(R.string.leg_ex_10_url)));
 
     }
 }

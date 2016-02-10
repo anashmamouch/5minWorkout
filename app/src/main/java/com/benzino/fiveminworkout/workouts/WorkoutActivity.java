@@ -220,12 +220,9 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     protected abstract String setType();
 
     public void initWakeLock(){
-
-            //Keeping the device awake during the workout
-            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "MyTag");
-
-
+        //Keeping the device awake during the workout
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "MyTag");
     }
 
     /*
@@ -274,20 +271,28 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
 
             @Override
-            public void onInit(final int status) {
-                Bundle bundle = new Bundle();
-                bundle.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
+            public void onInit(int status) {
 
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
+                if(status == TextToSpeech.SUCCESS){
+                    Log.d("ANASPEAK", "Text To Speech Status: "+ status);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
 
-                tts.setLanguage(Locale.US);
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                    tts.speak(" ", TextToSpeech.QUEUE_FLUSH, bundle, "ANAS");
+                    tts.setLanguage(Locale.US);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                        tts.speak(" ", TextToSpeech.QUEUE_FLUSH, bundle, "ANAS");
+                    }else{
+                        tts.speak(" ", TextToSpeech.QUEUE_FLUSH, hashMap);
+                    }
                 }else{
-                    tts.speak(" ", TextToSpeech.QUEUE_FLUSH, hashMap);
+                    ttsReady = true;
+                    Log.d("ANASPEAK", "Text To Speech Status: "+ status);
                 }
+
             }
         });
 
@@ -446,8 +451,11 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         resume.setVisibility(View.GONE);
 
         repeatWorkout.setVisibility(View.VISIBLE);
+        repeatWorkout.setEnabled(true);
         changeWorkout.setVisibility(View.VISIBLE);
+        changeWorkout.setEnabled(true);
         share.setVisibility(View.VISIBLE);
+        share.setEnabled(true);
     }
 
     /**

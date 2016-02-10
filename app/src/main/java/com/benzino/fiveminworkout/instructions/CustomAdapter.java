@@ -1,6 +1,8 @@
 package com.benzino.fiveminworkout.instructions;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,16 +36,17 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.PlyoCardio
 
     @Override
     public void onBindViewHolder(PlyoCardioHolder holder, int position) {
-        Model item = list.get(position);
+        final Model item = list.get(position);
         holder.titleTextView.setText(item.mTitle);
         holder.descTextView.setText(item.mDescription);
         holder.videoButton.setText("VIDEO");
 
-        if(context.getClass().getSimpleName().equals(FatCardioInstruction.class.getSimpleName())){
-            if (position == 2){
-                holder.videoButton.setText("LOLOLO");
+        holder.videoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.mUrl)));
             }
-        }
+        });
 
     }
 

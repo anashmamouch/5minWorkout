@@ -1,5 +1,7 @@
 package com.benzino.fiveminworkout.workouts;
 
+import com.benzino.fiveminworkout.R;
+
 /**
  * Created on 7/2/16.
  *
@@ -23,16 +25,16 @@ public class LegWorkout extends WorkoutActivity {
     @Override
     protected void setExercises() {
         workouts = new String[]{
-                "Leg 1",
-                "Leg 2",
-                "Leg 3",
-                "Leg 4",
-                "Leg 5",
-                "Leg 6",
-                "Leg 7",
-                "Leg 8",
-                "Leg 9",
-                "Leg 10",
+                getResources().getString(R.string.leg_ex_1_title),
+                getResources().getString(R.string.leg_ex_2_title),
+                getResources().getString(R.string.leg_ex_3_title),
+                getResources().getString(R.string.leg_ex_4_title),
+                getResources().getString(R.string.leg_ex_5_title),
+                getResources().getString(R.string.leg_ex_6_title),
+                getResources().getString(R.string.leg_ex_7_title),
+                getResources().getString(R.string.leg_ex_8_title),
+                getResources().getString(R.string.leg_ex_9_title),
+                getResources().getString(R.string.leg_ex_10_title),
                 " "};
     }
 

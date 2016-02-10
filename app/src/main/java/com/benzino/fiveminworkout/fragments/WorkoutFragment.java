@@ -51,10 +51,11 @@ public class WorkoutFragment extends android.support.v4.app.Fragment{
 
     public void initData(){
         mList = new ArrayList<Model>();
-        mList.add(new Model("Plyometric Cardio", "Focus on speed, agility and explosive power."));
-        mList.add(new Model("Fat-burning Cardio", "Burn your calories quickly and increase your cardiovascular activity."));
-        mList.add(new Model("ABS workout", "Get a flat belly and strenghten your core with these abs exercices."));
-        mList.add(new Model("Leg Workout", "The ultimate excuse-free exercises for strong toned legs."));
+        mList.add(new Model(getResources().getString(R.string.plyometric_title), getResources().getString(R.string.plyometric_description)));
+        mList.add(new Model(getResources().getString(R.string.fatburning_title), getResources().getString(R.string.fatburning_description)));
+        mList.add(new Model(getResources().getString(R.string.abs_title), getResources().getString(R.string.abs_description)));
+        mList.add(new Model(getResources().getString(R.string.leg_title), getResources().getString(R.string.leg_description)));
+
     }
 
 }

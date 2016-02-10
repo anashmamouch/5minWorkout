@@ -1,5 +1,7 @@
 package com.benzino.fiveminworkout.workouts;
 
+import com.benzino.fiveminworkout.R;
+
 /**
  *
  * Created on 7/2/16.
@@ -24,16 +26,16 @@ public class PlyoCardioWorkout extends WorkoutActivity{
     @Override
     protected void setExercises() {
         workouts = new String[]{
-                "Plyometric 1",
-                "Plyometric 2",
-                "Plyometric 3",
-                "Plyometric 4",
-                "Plyometric 5",
-                "Plyometric 6",
-                "Plyometric 7",
-                "Plyometric 8",
-                "Plyometric 9",
-                "Plyometric 10",
+                getResources().getString(R.string.plyo_ex_1_title),
+                getResources().getString(R.string.plyo_ex_2_title),
+                getResources().getString(R.string.plyo_ex_3_title),
+                getResources().getString(R.string.plyo_ex_4_title),
+                getResources().getString(R.string.plyo_ex_5_title),
+                getResources().getString(R.string.plyo_ex_6_title),
+                getResources().getString(R.string.plyo_ex_7_title),
+                getResources().getString(R.string.plyo_ex_8_title),
+                getResources().getString(R.string.plyo_ex_9_title),
+                getResources().getString(R.string.plyo_ex_10_title),
                 " "};
     }
 

@@ -1,5 +1,7 @@
 package com.benzino.fiveminworkout.workouts;
 
+import com.benzino.fiveminworkout.R;
+
 /**
  * Created on 7/2/16.
  *
@@ -22,16 +24,16 @@ public class FatCardioWorkout extends WorkoutActivity {
     @Override
     protected void setExercises() {
         workouts = new String[]{
-                "Fat 1",
-                "Fat 2",
-                "Fat 3",
-                "Fat 4",
-                "Fat 5",
-                "Fat 6",
-                "Fat 7",
-                "Fat 8",
-                "Fat 9",
-                "Fat 10",
+                getResources().getString(R.string.fat_ex_1_title),
+                getResources().getString(R.string.fat_ex_2_title),
+                getResources().getString(R.string.fat_ex_3_title),
+                getResources().getString(R.string.fat_ex_4_title),
+                getResources().getString(R.string.fat_ex_5_title),
+                getResources().getString(R.string.fat_ex_6_title),
+                getResources().getString(R.string.fat_ex_7_title),
+                getResources().getString(R.string.fat_ex_8_title),
+                getResources().getString(R.string.fat_ex_9_title),
+                getResources().getString(R.string.fat_ex_10_title),
                 " "};
     }
 
