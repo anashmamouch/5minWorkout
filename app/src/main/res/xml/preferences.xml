@@ -6,7 +6,7 @@
     <com.vanniktech.vntnumberpickerpreference.VNTNumberPickerPreference
         android:defaultValue="20"
         android:key="exercise_time"
-        android:title="Exercice time in seconds"
+        android:title="@string/settings_exercice_time"
         app:vnt_maxValue="60"
         app:vnt_minValue="10"
         app:vnt_setWrapSelectorWheel="true"/>
@@ -14,7 +14,7 @@
     <com.vanniktech.vntnumberpickerpreference.VNTNumberPickerPreference
         android:defaultValue="10"
         android:key="rest_time"
-        android:title="Rest time in seconds"
+        android:title="@string/settings_rest_time"
         app:vnt_maxValue="30"
         app:vnt_minValue="5"
         app:vnt_setWrapSelectorWheel="true"/>

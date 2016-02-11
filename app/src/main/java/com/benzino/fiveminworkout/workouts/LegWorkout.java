@@ -39,6 +39,26 @@ public class LegWorkout extends WorkoutActivity {
     }
 
     /**
+     * Used to set the array of videos
+     */
+    @Override
+    protected void setVideos() {
+        videos = new String[]{
+                getResources().getString(R.string.leg_ex_1_url),
+                getResources().getString(R.string.leg_ex_2_url),
+                getResources().getString(R.string.leg_ex_3_url),
+                getResources().getString(R.string.leg_ex_4_url),
+                getResources().getString(R.string.leg_ex_5_url),
+                getResources().getString(R.string.leg_ex_6_url),
+                getResources().getString(R.string.leg_ex_7_url),
+                getResources().getString(R.string.leg_ex_8_url),
+                getResources().getString(R.string.leg_ex_9_url),
+                getResources().getString(R.string.leg_ex_10_url),
+                " "
+        };
+    }
+
+    /**
      * Sets the type of the workout
      *
      * @return type of the workout

@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFF"
-            android:text="EXERCICE ONE"
+            android:text="EXERCISE ONE"
             android:padding="4dp"
             android:textSize="24sp"
             android:layout_centerInParent="true" />
@@ -51,35 +51,52 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/repeat_workout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_first_exercise"
-        android:text="Repeat Workout"
-        android:textColor="#FFF"
-        android:textSize="24sp"
-        android:background="@android:color/transparent"/>
+        android:layout_centerInParent="true">
 
-    <Button
-        android:id="@+id/change_workout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/repeat_workout"
-        android:text="Change Workout"
-        android:textColor="#FFF"
-        android:textSize="24sp"
-        android:background="@android:color/transparent"/>
+        <TextView
+            android:id="@+id/congratulations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Congratulations"
+            android:padding="4dp"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:textColor="#FFF"
+            android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/share_workout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/change_workout"
-        android:text="Share"
-        android:textColor="#FFF"
-        android:textSize="24sp"
-        android:background="@android:color/transparent"/>
+        <Button
+            android:id="@+id/repeat_workout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/congratulations"
+            android:text="Repeat Workout"
+            android:textColor="#FFF"
+            android:textSize="24sp"
+            android:background="@android:color/transparent"/>
+
+        <Button
+            android:id="@+id/change_workout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/repeat_workout"
+            android:text="Change Workout"
+            android:textColor="#FFF"
+            android:textSize="24sp"
+            android:background="@android:color/transparent"/>
+
+        <Button
+            android:id="@+id/share_workout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/change_workout"
+            android:text="Share"
+            android:textColor="#FFF"
+            android:textSize="24sp"
+            android:background="@android:color/transparent"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/counter"
@@ -113,8 +130,6 @@
         android:layout_marginTop="16dp"
         android:layout_below="@+id/counter"/>
 
-
-
     <Button
         android:id="@+id/counter_button_pause"
         android:layout_width="match_parent"
@@ -134,6 +149,5 @@
         android:textSize="24dp"
         android:background="@android:color/transparent"
         android:layout_alignParentBottom="true"/>
-
 
 </RelativeLayout>

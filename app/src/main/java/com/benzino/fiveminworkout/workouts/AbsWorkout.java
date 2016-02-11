@@ -38,6 +38,26 @@ public class AbsWorkout extends WorkoutActivity {
     }
 
     /**
+     * Used to set the array of videos
+     */
+    @Override
+    protected void setVideos() {
+        videos = new String[]{
+                getResources().getString(R.string.abs_ex_1_url),
+                getResources().getString(R.string.abs_ex_2_url),
+                getResources().getString(R.string.abs_ex_3_url),
+                getResources().getString(R.string.abs_ex_4_url),
+                getResources().getString(R.string.abs_ex_5_url),
+                getResources().getString(R.string.abs_ex_6_url),
+                getResources().getString(R.string.abs_ex_7_url),
+                getResources().getString(R.string.abs_ex_8_url),
+                getResources().getString(R.string.abs_ex_9_url),
+                getResources().getString(R.string.abs_ex_10_url),
+                " "
+        };
+    }
+
+    /**
      * Sets the type of the workout
      *
      * @return type of the workout

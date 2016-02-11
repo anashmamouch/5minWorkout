@@ -36,7 +36,28 @@ public class PlyoCardioWorkout extends WorkoutActivity{
                 getResources().getString(R.string.plyo_ex_8_title),
                 getResources().getString(R.string.plyo_ex_9_title),
                 getResources().getString(R.string.plyo_ex_10_title),
-                " "};
+                " "
+        };
+    }
+
+    /**
+     * Used to set the array of videos
+     */
+    @Override
+    protected void setVideos() {
+        videos = new String[]{
+                getResources().getString(R.string.plyo_ex_1_url),
+                getResources().getString(R.string.plyo_ex_2_url),
+                getResources().getString(R.string.plyo_ex_3_url),
+                getResources().getString(R.string.plyo_ex_4_url),
+                getResources().getString(R.string.plyo_ex_5_url),
+                getResources().getString(R.string.plyo_ex_6_url),
+                getResources().getString(R.string.plyo_ex_7_url),
+                getResources().getString(R.string.plyo_ex_8_url),
+                getResources().getString(R.string.plyo_ex_9_url),
+                getResources().getString(R.string.plyo_ex_10_url),
+                " "
+        };
     }
 
     /**

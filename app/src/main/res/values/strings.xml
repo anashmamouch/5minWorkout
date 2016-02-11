@@ -38,7 +38,6 @@
         <string name="plyo_ex_4_url">https://youtu.be/UXJrBgI2RxA</string>
         <string name="plyo_ex_4_desc">Stand with your head facing forward and your chest held up and out.
             Place your feet shoulder-width apart or slightly wider.
-            Extend your hands straight out in front of you to help keep your balance.
             Sit back and down like you\'re sitting into an imaginary chair.
             Keep your head facing forward as your upper body bends forward a bit.
             Lower down so your thighs are as parallel to the floor as possible.
@@ -55,23 +54,39 @@
 
         <string name="plyo_ex_6_title">Mountain Climbers</string>
         <string name="plyo_ex_6_url">https://youtu.be/nmwgirgXLYM</string>
-        <string name="plyo_ex_6_desc">Mountain Climbers description</string>
+        <string name="plyo_ex_6_desc">Place hands on floor, slightly wider than shoulder width.
+            Position one leg forward bent under body and extend other leg back.
+            While holding upper body in place, alternate leg positions by pushing hips up while
+            immediately extending forward leg back and pulling rear leg forward under body,
+            landing on both forefeet simultaneously.</string>
 
         <string name="plyo_ex_7_title">Ski Abs</string>
         <string name="plyo_ex_7_url">https://youtu.be/eOSYhsT9On4</string>
-        <string name="plyo_ex_7_desc">Ski Abs description</string>
+        <string name="plyo_ex_7_desc">
+            Set up in a plank position with your hands below your shoulders and pull your shoulder blades down away from your ears.
+            Lift your feet simultaneously, jumping them toward your belly button.
+            Immediately kick the back to the diagonal left.
+            Jump your legs back in toward your belly button. Immediately kick them straight back to your original start position.
+        </string>
 
-        <string name="plyo_ex_8_title">Ski Abs</string>
+        <string name="plyo_ex_8_title">Crunches</string>
         <string name="plyo_ex_8_url">https://youtu.be/Xyd_fa5zoEU</string>
-        <string name="plyo_ex_8_desc">Ski Abs description</string>
+        <string name="plyo_ex_8_desc">Lie on your back with your knees bent and feet flat on the floor, hip-width apart.
+            Place your hands behind your head so your thumbs are behind your ears.
+            Hold your elbows out to the sides but rounded slightly in.</string>
 
         <string name="plyo_ex_9_title">Plank</string>
         <string name="plyo_ex_9_url">https://youtu.be/pSHjTRCQxIw</string>
-        <string name="plyo_ex_9_desc">Plank description</string>
+        <string name="plyo_ex_9_desc">Bend your elbows 90 degrees and rest your weight on your forearms.
+            Your elbows should be directly beneath your shoulders,
+            and your body should form a straight line from your head to your feet.
+            Your goal should be to hold the position for as long as you can.</string>
 
         <string name="plyo_ex_10_title">Push-ups</string>
         <string name="plyo_ex_10_url">https://youtu.be/Q7cPaJZoOng</string>
-        <string name="plyo_ex_10_desc">Push-ups description</string>
+        <string name="plyo_ex_10_desc">Lie on the floor with hands slightly wider than shoulder width.
+            Raise body up off floor by extending arms with body straight.
+            Keeping body straight, lower body to floor by bending arms. Push body up until arms are extended.</string>
 
     <!--Fat burning Cardio-->
     <string name="fatburning_title">Fat-burning Cardio</string>
@@ -79,43 +94,74 @@
 
         <string name="fat_ex_1_title">Jog</string>
         <string name="fat_ex_1_url">https://youtu.be/dt7FAEYRLC4</string>
-        <string name="fat_ex_1_desc">Jog description</string>
+        <string name="fat_ex_1_desc">Lift your feet only an inch or two off the ground, hopping from foot to foot just in your place.
+            Move your arms as you jog. The more you move your body, the more calories you\'ll burn as you work out.
+            Engaging your arms is an effective way to up the burn.</string>
 
         <string name="fat_ex_2_title">Heisman</string>
         <string name="fat_ex_2_url">https://youtu.be/xMD06kfDZHE</string>
-        <string name="fat_ex_2_desc">Heisman description</string>
+        <string name="fat_ex_2_desc">Stand straight with your feet together, allowing your arms to hang by your sides. Slightly bend your knees and lean your upper body forward.
+        Lift your left foot off the ground and leap onto your left foot while you lower it to the floor.
+            At the same time, lift and rotate your right knee to your left elbow.
+            Repeat the movements while heading toward your right side</string>
 
         <string name="fat_ex_3_title">Frog Jumps</string>
         <string name="fat_ex_3_url">https://youtu.be/NSPy43tX8e4</string>
-        <string name="fat_ex_3_desc">Frog Jumps description</string>
+        <string name="fat_ex_3_desc">Stand with your hands behind your head, and squat down keeping
+            your torso upright and your head up.
+            This will be your starting position.
+            Jump forward several feet, avoiding jumping unnecessarily high.
+            As your feet contact the ground, absorb the impact through your legs, and jump again.</string>
 
         <string name="fat_ex_4_title">Burpees</string>
         <string name="fat_ex_4_url">https://youtu.be/CIQx1FiQt50</string>
-        <string name="fat_ex_4_desc">Burpees description</string>
+        <string name="fat_ex_4_desc">Begin in a standing position.
+            Drop into a squat position with your hands on the ground.
+            Kick your feet back, while keeping your arms extended, then do a push up.
+            Immediately return your feet to the squat position.
+            Jump up from the squat position</string>
 
         <string name="fat_ex_5_title">Power Jacks</string>
         <string name="fat_ex_5_url">https://youtu.be/yKtCqo_fYrc</string>
-        <string name="fat_ex_5_desc">Power Jacks description</string>
+        <string name="fat_ex_5_desc">Stand with feet side by side, head up, shoulders back, and back straight.
+            Hop your feet out to the side, simultaneously bringing the arms down and to the sides as well,
+            going into a deep squat with feet wider than shoulder width apart.
+            Exhale, pressing through the heels, jumping up and bringing feet back together at center and arms overhead.</string>
 
         <string name="fat_ex_6_title">Mountain Climbers</string>
         <string name="fat_ex_6_url">https://youtu.be/nmwgirgXLYM</string>
-        <string name="fat_ex_6_desc">Mountain Climbers description</string>
+        <string name="fat_ex_6_desc">Place hands on floor, slightly wider than shoulder width.
+            Position one leg forward bent under body and extend other leg back.
+            While holding upper body in place, alternate leg positions by pushing hips up while
+            immediately extending forward leg back and pulling rear leg forward under body,
+            landing on both forefeet simultaneously.</string>
 
         <string name="fat_ex_7_title">Power Knees</string>
         <string name="fat_ex_7_url">https://youtu.be/r9NRlpW9D60</string>
-        <string name="fat_ex_7_desc">Power Knees description</string>
+        <string name="fat_ex_7_desc">Stand on one leg, lean slightly to one side and move
+            your opposite knee across your body to the opposite shoulder while bringing both hands
+            down in a karate like motion.</string>
 
         <string name="fat_ex_8_title">Jumping jacks</string>
         <string name="fat_ex_8_url">https://youtu.be/c4DAnQ6DtF8</string>
-        <string name="fat_ex_8_desc">Jumping Jacks description</string>
+        <string name="fat_ex_8_desc">Stand with feet together, knees slightly bent, and arms to sides.
+            Jump while raising arms and separating legs to sides.
+            Land on forefoot with legs apart and arms overhead.
+            Jump again while lower arms and returning legs to midline.</string>
 
         <string name="fat_ex_9_title">High Knees</string>
         <string name="fat_ex_9_url">https://youtu.be/ZZZoCNMU48U</string>
-        <string name="fat_ex_9_desc">High Knees description</string>
+        <string name="fat_ex_9_desc">Stand straight with the feet hip width apart,
+            looking straight ahead and arms hanging down by your side.
+            Jump from one foot to the other at the same time lifting your knees as high as possible,
+            hip height is advisable. The arms should be following the motion.
+            Touch the ground with the balls of your feet.</string>
 
         <string name="fat_ex_10_title">Butt Kicks</string>
         <string name="fat_ex_10_url">https://youtu.be/D_qMNWY0tHo</string>
-        <string name="fat_ex_10_desc">Butt Kicks description</string>
+        <string name="fat_ex_10_desc">Stand with your feet pointed straight ahead and placed
+            shoulder-width apart. Contract your glutes, jump up and bring your heel to your glutes
+            – be careful not to arch your back. Land softly and repeat with control.</string>
 
     <!--Abs Workout-->
     <string name="abs_title">Abs Workout</string>
@@ -123,43 +169,73 @@
 
         <string name="abs_ex_1_title">Mountain Climbers</string>
         <string name="abs_ex_1_url">https://youtu.be/nmwgirgXLYM</string>
-        <string name="abs_ex_1_desc">Mountain Climbers description</string>
+        <string name="abs_ex_1_desc">Place hands on floor, slightly wider than shoulder width.
+            Position one leg forward bent under body and extend other leg back.
+            While holding upper body in place, alternate leg positions by pushing hips up while
+            immediately extending forward leg back and pulling rear leg forward under body,
+            landing on both forefeet simultaneously.</string>
 
         <string name="abs_ex_2_title">Crunches</string>
         <string name="abs_ex_2_url">https://youtu.be/Xyd_fa5zoEU</string>
-        <string name="abs_ex_2_desc">Crunches description</string>
+        <string name="abs_ex_2_desc">Lie on your back with your knees bent and feet flat on the floor, hip-width apart.
+            Place your hands behind your head so your thumbs are behind your ears.
+            Hold your elbows out to the sides but rounded slightly in.</string>
 
         <string name="abs_ex_3_title">Burpees</string>
         <string name="abs_ex_3_url">https://youtu.be/JZQA08SlJnM</string>
-        <string name="abs_ex_3_desc">Burpees description</string>
+        <string name="abs_ex_3_desc">Begin in a standing position.
+            Drop into a squat position with your hands on the ground.
+            Kick your feet back, while keeping your arms extended, then do a push up.
+            Immediately return your feet to the squat position.
+            Jump up from the squat position</string>
 
         <string name="abs_ex_4_title">Reverse Crunches</string>
         <string name="abs_ex_4_url">https://youtu.be/7rRWy7-Gokg</string>
-        <string name="abs_ex_4_desc">Reverse Crunches description</string>
+        <string name="abs_ex_4_desc">Lie on your back with your knees together and your legs bent to 90 degrees, feet planted on the floor.
+        Tighten your abs to lift your hips off the floor as you crunch your knees inward to your chest.</string>
 
         <string name="abs_ex_5_title">Jumping Squats</string>
         <string name="abs_ex_5_url">https://youtu.be/U4s4mEQ5VqU</string>
-        <string name="abs_ex_5_desc">Jumping Squats description</string>
+        <string name="abs_ex_5_desc">Stand with your feet shoulder-width apart.
+            Start by doing a regular squat, then engage your core and jump up explosively.
+            When you land, lower your body back into the squat position to complete one rep.
+            Land as quietly as possible, which requires control.</string>
 
         <string name="abs_ex_6_title">Bicycle crunches</string>
         <string name="abs_ex_6_url">https://youtu.be/Iwyvozckjak</string>
-        <string name="abs_ex_6_desc">Bicycle crunches description</string>
+        <string name="abs_ex_6_desc">Begin by lying on your back, placing your hands behind your ears.
+            Lift your legs in the air and bend your knees so that your legs form a 90 degree angle.
+            Move your legs in a bicycle motion. When your left knee is closer to your body, reach your right elbow to it.
+            When your right knee is closer to your body, reach your left elbow to it.</string>
 
         <string name="abs_ex_7_title">Bridge</string>
         <string name="abs_ex_7_url">https://youtu.be/2-d8EplhKIM</string>
-        <string name="abs_ex_7_desc">Bridge description</string>
+        <string name="abs_ex_7_desc">Lie flat on the floor on your back with the hands by your side and your knees bent.
+            Pushing mainly with your heels, lift your hips off the floor while keeping your back straight.
+            Breathe out as you perform this part of the motion and hold at the top for a second.</string>
 
         <string name="abs_ex_8_title">Side-Plank Rotations</string>
         <string name="abs_ex_8_url">https://youtu.be/R-k0OF5LoiA</string>
-        <string name="abs_ex_8_desc">Side-Plank Rotations description</string>
+        <string name="abs_ex_8_desc">Lie on your left side and position your elbow directly under your right shoulder.
+            Push your right elbow against the floor as you lift up your glutes and hips off the floor
+            until left shoulder, left hip, and left foot are in a straight line.
+            Reach up with your right hand and extend.
+            Rotate your torso downwards and reach under your body with your left arm.
+            Rotate back to the side plank with arm up and repeat</string>
 
         <string name="abs_ex_9_title">Heel Touchers</string>
         <string name="abs_ex_9_url">https://youtu.be/6V3hi2AO9Wg</string>
-        <string name="abs_ex_9_desc">Plank description</string>
+        <string name="abs_ex_9_desc">Lie on your back with your knees bent and your hands next to your hips.
+            Slightly raise your upper body off the floor and with one hand reach down your side to your heel.
+            Return to the middle and repeat to the other side reaching to touch your hand to your heel.
+            Keep moving from side to side. </string>
 
         <string name="abs_ex_10_title">Plank</string>
         <string name="abs_ex_10_url">https://youtu.be/pSHjTRCQxIw</string>
-        <string name="abs_ex_10_desc">Plank description</string>
+        <string name="abs_ex_10_desc">Bend your elbows 90 degrees and rest your weight on your forearms.
+            Your elbows should be directly beneath your shoulders,
+            and your body should form a straight line from your head to your feet.
+            Your goal should be to hold the position for as long as you can.</string>
 
     <!--Leg Workout-->
     <string name="leg_title">Leg Workout</string>
@@ -167,45 +243,83 @@
 
         <string name="leg_ex_1_title">Jog</string>
         <string name="leg_ex_1_url">https://youtu.be/dt7FAEYRLC4</string>
-        <string name="leg_ex_1_desc">Jog description</string>
+        <string name="leg_ex_1_desc">Lift your feet only an inch or two off the ground, hopping from foot to foot just in your place.
+            Move your arms as you jog. The more you move your body, the more calories you\'ll burn as you work out.
+            Engaging your arms is an effective way to up the burn.</string>
 
         <string name="leg_ex_2_title">High Knees</string>
         <string name="leg_ex_2_url">https://youtu.be/ZZZoCNMU48U</string>
-        <string name="leg_ex_2_desc">High Knees description</string>
+        <string name="leg_ex_2_desc">Stand straight with the feet hip width apart,
+            looking straight ahead and arms hanging down by your side.
+            Jump from one foot to the other at the same time lifting your knees as high as possible,
+            hip height is advisable. The arms should be following the motion.
+            Touch the ground with the balls of your feet.</string>
 
         <string name="leg_ex_3_title">Butt kicks</string>
         <string name="leg_ex_3_url">https://youtu.be/D_qMNWY0tHo</string>
-        <string name="leg_ex_3_desc">Butt kicks description</string>
+        <string name="leg_ex_3_desc">Stand with your feet pointed straight ahead and placed
+            shoulder-width apart. Contract your glutes, jump up and bring your heel to your glutes
+            – be careful not to arch your back. Land softly and repeat with control.</string>
 
         <string name="leg_ex_4_title">Lunges</string>
         <string name="leg_ex_4_url">https://youtu.be/COKYKgQ8KR0</string>
-        <string name="leg_ex_4_desc">Lunges description</string>
+        <string name="leg_ex_4_desc">Stand upright. Step forward with one foot.
+            The toes of both feet should be facing straight ahead.
+            Be sure your legs are aligned - your front knee should be aligned with the foot.
+            Lower your back knee towards the floor.
+            Push back up to the starting position.</string>
 
         <string name="leg_ex_5_title">Squats</string>
         <string name="leg_ex_5_url">https://youtu.be/UXJrBgI2RxA</string>
-        <string name="leg_ex_5_desc">Squats description</string>
+        <string name="leg_ex_5_desc">Stand with your head facing forward and your chest held up and out.
+            Place your feet shoulder-width apart or slightly wider.
+            Sit back and down like you\'re sitting into an imaginary chair.
+            Keep your head facing forward as your upper body bends forward a bit.
+            Lower down so your thighs are as parallel to the floor as possible.
+            Keep your body tight, and push through your heels to bring yourself back to the starting position.</string>
 
         <string name="leg_ex_6_title">Jumping Squats</string>
         <string name="leg_ex_6_url">https://youtu.be/U4s4mEQ5VqU</string>
-        <string name="leg_ex_6_desc">Jumping Squats description</string>
+        <string name="leg_ex_6_desc">Stand with your feet shoulder-width apart.
+            Start by doing a regular squat, then engage your core and jump up explosively.
+            When you land, lower your body back into the squat position to complete one rep.
+            Land as quietly as possible, which requires control.</string>
 
         <string name="leg_ex_7_title">Side Lunges</string>
         <string name="leg_ex_7_url">https://youtu.be/FUX6Pz8vV0s</string>
-        <string name="leg_ex_7_desc">Side Lunges description</string>
+        <string name="leg_ex_7_desc">Stand with your feet and knees together.
+        Take a large step with your right foot to the right side and lunge toward the floor.
+        Push off through your right foot to return to the start to complete one rep.</string>
 
         <string name="leg_ex_8_title">Single Leg Bridge</string>
         <string name="leg_ex_8_url">https://youtu.be/Y-6Gonx2Wpo</string>
-        <string name="leg_ex_8_desc">Single Leg Bridge description</string>
+        <string name="leg_ex_8_desc">Lie on back with right leg straight and left leg bent so foot is flat on the ground.
+            Relax head and neck on mat or ground.
+            Arms should be placed to your side.
+            Lift right leg to the top of the left knee, keeping the right leg straight.
+            Hold for 2 seconds and return to starting position. </string>
 
         <string name="leg_ex_9_title">Bear Squats</string>
         <string name="leg_ex_9_url">https://youtu.be/eAsSa8IsZs4</string>
-        <string name="leg_ex_9_desc">Bear Squats description</string>
+        <string name="leg_ex_9_desc">Position your hands and feet on the ground so that are approximately shoulders width away from each other.
+            Your knees are going to be at about a 90 degree angle.
+            Lower your buttocks back until they almost touch your heels.
+            Raise yourself back up again and repeat.</string>
 
         <string name="leg_ex_10_title">Leg Raises</string>
         <string name="leg_ex_10_url">https://youtu.be/JB2oyawG9KI</string>
-        <string name="leg_ex_10_desc">Leg Raises description</string>
+        <string name="leg_ex_10_desc">Lay down with your hands to your sides for support.
+        Slowly raise your legs 90 degrees, contracting your abs.
+        Slowly return to starting position. Do not touch the floor with your feet.</string>
 
 
     <!--Settings-->
-    
+    <string name="settings_exercice_time">Exercice time in seconds</string>
+    <string name="settings_rest_time">Rest time in seconds</string>
+    <string name="settings_audio">Audio</string>
+    <string name="settings_feedback">Feedback</string>
+    <string name="settings_share">Share with friends </string>
+
+    <!--Toolbar-->
+
 </resources>

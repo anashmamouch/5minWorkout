@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     private TextView exercise1;
     private TextView exercise2;
     private ImageView video;
+    private TextView congratulations;
     private Button repeatWorkout;
     private Button changeWorkout;
     private Button share;
@@ -64,7 +66,10 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
     private boolean ttsReady = false;//waits for text to speach to initialize
 
-    protected String[] workouts;
+    private boolean isDone = false;
+
+    protected String[] workouts;//array of exercises
+    protected String[] videos;//array of videos
 
     private long startTime;
     private long launchTime;
@@ -74,7 +79,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_plyoworkout);
+        setContentView(R.layout.activity_workout);
 
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -90,6 +95,8 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
         setExercises();
 
+        setVideos();
+
         counter = (TextView) findViewById(R.id.counter);
         counter.setTypeface(Typeface.createFromAsset(getApplication().getAssets(), "fonts/Roboto-Thin.ttf"));
 
@@ -101,6 +108,10 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
         video = (ImageView) findViewById(R.id.video_icon);
         video.setVisibility(View.GONE);
+
+        congratulations = (TextView)findViewById(R.id.congratulations);
+        congratulations.setTypeface(Typeface.createFromAsset(getApplication().getAssets(), "fonts/lobster.ttf"));
+        congratulations.setVisibility(View.GONE);
 
         repeatWorkout = (Button) findViewById(R.id.repeat_workout);
         repeatWorkout.setVisibility(View.GONE);
@@ -153,7 +164,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
         if (view.getId() == R.id.counter_button_resume){
             this.mWakeLock.acquire();
-            resumeCounter(workouts);
+            resumeCounter();
         }
 
         if(view.getId() == R.id.repeat_workout){
@@ -164,20 +175,17 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             onBackPressed();
 
         if (view.getId() == R.id.share_workout){
-            String link = "this is a link";
-            String message = "I just finished my "+setToolbarTitle()+" and i feel great thanks to this awesome app.\nDownload it from here: \n" + link;
+            String link = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
+            String message = "I just finished my "+setToolbarTitle()+" and i feel great thanks to this awesome app #5minWorkout.\nDownload it from here: \n" + link;
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_TEXT, message);
 
             startActivity(Intent.createChooser(share, "Share your " + setToolbarTitle()));
-            resume.setEnabled(false);
-            pause.setEnabled(false);
-            resume.setVisibility(View.GONE);
-            pause.setVisibility(View.GONE);
         }
     }
 
+    /** Called when activity is paused */
     @Override
     protected void onPause() {
         super.onPause();
@@ -185,8 +193,9 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             mWakeLock.release();
         }
 
-        if(timer!=null && !timer.mPaused)
+        if(timer!=null && !isDone){
             pauseCounter();
+        }
 
         if (mAdView != null) {
             mAdView.pause();
@@ -202,6 +211,37 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         }
     }
 
+    /** Called when stopping the activity */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("ANAS", "Workout Activity Stopped");
+    }
+
+    /** Called when activity is destroyed */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //release wakelock
+        if(mWakeLock.isHeld())
+            mWakeLock.release();
+
+        //stop and shutdown text to speech
+        if(tts != null){
+            tts.stop();
+            tts.shutdown();
+        }
+
+        //stop the countdown timer
+        if(timer !=null){
+            timer.cancel();
+            timer = null;
+        }
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+    }
+
     /**
      * Used to set the title of the toolbar
      * @return the title of the toolbar
@@ -212,6 +252,11 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
      * Used to set the array of exercices
      */
     protected abstract void setExercises();
+
+    /**
+     * Used to set the array of videos
+     */
+    protected abstract void setVideos();
 
     /**
      * Sets the type of the workout
@@ -261,6 +306,19 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             EXERCISE_TIME = sp.getInt("exercise_time", 20) * INTERVAL;
             REST_TIME = sp.getInt("rest_time", 10) * INTERVAL;
         }
+    }
+
+    /**
+     * Sets listener to the video icon
+     *
+     */
+    public void watchVideo(final String url){
+        video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
+        });
     }
 
     /**
@@ -383,25 +441,20 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("ANASTOP", "+++++++++++ WorkoutActivity is stopped ++++++++++++");
-    }
-
     /**
      * Model for the countdown timer
      *
      * @param array the array of exercises
      * @param millisUntilFinished milliseconds until the countdown is done
      */
-    public void textCounting(long millisUntilFinished, String[] array) {
+    public void textCounting(long millisUntilFinished, String[] array, String[] videos) {
         if (timer.mMillisLeft < TOTAL_TIME
                 && (TOTAL_TIME - EXERCISE_TIME) <= timer.mMillisLeft) {
             counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - EXERCISE_TIME - INTERVAL)) / INTERVAL));
             exercise1.setText(array[0]);
             exercise2.setText("Next: "+ array[1]);
             video.setVisibility(View.VISIBLE);
+            watchVideo(videos[0]);
         }
         if (timer.mMillisLeft < (TOTAL_TIME - j * EXERCISE_TIME - (j - 1) * REST_TIME)
                 && (TOTAL_TIME - j * EXERCISE_TIME - j * REST_TIME) <= timer.mMillisLeft) {
@@ -415,6 +468,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - (j+ 1) * EXERCISE_TIME - j * REST_TIME - INTERVAL)) / INTERVAL));
             exercise1.setText(array[j]);
             video.setVisibility(View.VISIBLE);
+            watchVideo(videos[j]);
 
             if (j == (array.length - 2) ){
                 counter.setText("" + ((millisUntilFinished - (TOTAL_TIME - (j+ 1) * EXERCISE_TIME - j * REST_TIME)) / INTERVAL));
@@ -434,22 +488,21 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
      * Called when the countdown timer is done
      */
     public void done() {
-        Typeface font = Typeface.createFromAsset(getApplication().getAssets(), "fonts/lobster.ttf");
+        isDone = true;
 
         DatabaseHandler.getInstance(WorkoutActivity.this).createTest(new Test(setType()));
 
         j = 1;
         n = 1;
 
-        exercise1.setTypeface(font);
-        exercise1.setText("Congragulations");
-        counter.setText("");
-        exercise2.setText("");
-
         video.setVisibility(View.GONE);
         pause.setVisibility(View.GONE);
         resume.setVisibility(View.GONE);
+        counter.setVisibility(View.GONE);
+        exercise1.setVisibility(View.GONE);
+        exercise2.setVisibility(View.GONE);
 
+        congratulations.setVisibility(View.VISIBLE);
         repeatWorkout.setVisibility(View.VISIBLE);
         repeatWorkout.setEnabled(true);
         changeWorkout.setVisibility(View.VISIBLE);
@@ -461,9 +514,8 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     /**
      * Method used to start and initiate countdown time
      *
-     * @param array array of exercises
      */
-    public void startCounter(final String[] array){
+    public void startCounter(){
         pause.setEnabled(true);
         pause.setVisibility(View.VISIBLE);
 
@@ -487,9 +539,9 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
                     Log.d("ANASS", "isSpeaking?= " + tts.isSpeaking() + "; isReady?=" + ttsReady + ";  Time: " + timer.mMillisLeft);
 
-                    speaking(array);
+                    speaking(workouts);
 
-                    textCounting(millisUntilFinished, array);
+                    textCounting(millisUntilFinished, workouts, videos);
                 }
             /**
              * Callback fired when the time is up.
@@ -504,13 +556,14 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     /**
      * Called when we want to resume the counter after a pause
      *
-     * @param array the array of exercises
      */
-    public void resumeCounter(final String[] array){
+    public void resumeCounter(){
         resume.setEnabled(false);
         resume.setVisibility((View.GONE));
         pause.setEnabled(true);
         pause.setVisibility(View.VISIBLE);
+
+        Log.d("ANAS", "Resume button pressed");
 
         //Resumes the timer
         timer.resume();
@@ -520,38 +573,15 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
      * Called when we want to pause the countdown timer
      */
     public void pauseCounter(){
-        timer.pause();
-
-        Log.d("ANAS", "Pause button pressed");
-
         pause.setEnabled(false);
         pause.setVisibility(View.GONE);
         resume.setEnabled(true);
         resume.setVisibility(View.VISIBLE);
-    }
 
+        Log.d("ANAS", "Pause button pressed");
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //release wakelock
-        if(mWakeLock.isHeld())
-            mWakeLock.release();
-
-        //stop and shutdown text to speech
-        if(tts != null){
-            tts.stop();
-            tts.shutdown();
-        }
-
-        //stop the countdown timer
-        if(timer !=null){
-            timer.cancel();
-            timer = null;
-        }
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
+        //Pauses the timer
+        timer.pause();
     }
 
     /**
@@ -579,7 +609,7 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             spinner.setVisibility(View.GONE);
-            startCounter(workouts);
+            startCounter();
         }
     }
 
