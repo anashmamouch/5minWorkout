@@ -1,7 +1,9 @@
 package com.benzino.fiveminworkout.instructions;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.benzino.fiveminworkout.activities.AboutActivity;
 import com.benzino.fiveminworkout.data.Model;
 import com.benzino.fiveminworkout.R;
 import com.benzino.fiveminworkout.activities.SettingsActivity;
@@ -124,7 +125,7 @@ public abstract class InstructionActivity extends AppCompatActivity {
             return true;
         }
         else if(id == R.id.action_share) {
-            String link = "this is a link";
+            String link = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
             String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + link;
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
@@ -142,10 +143,21 @@ public abstract class InstructionActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(Email, "Send Feedback:"));
 
             return true;
-        }
-        else if(id == R.id.action_about){
-            startActivity(new Intent(this, AboutActivity.class));
-            return true;
+        }else if(id == R.id.action_rate){
+            Uri uri = Uri.parse("market://details?id=com.benzino.fiveminworkout");
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+            // To count with Play market backstack, After pressing back button,
+            // to taken back to our application, we need to add following flags to intent.
+            goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                    Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+
+            try {
+                startActivity(goToMarket);
+            } catch (ActivityNotFoundException e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout")));
+            }
         }
 
         return super.onOptionsItemSelected(item);
