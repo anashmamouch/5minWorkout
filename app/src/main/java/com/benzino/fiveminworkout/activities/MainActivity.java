@@ -78,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 String name = (String) pager.getAdapter().getPageTitle(position);
 
-                // [START screen_view_hit]
-                Log.i("ANASANALYTICS", "Setting screen name: " + name);
                 mTracker.setScreenName("Image~" + name);
                 mTracker.send(new HitBuilders.ScreenViewBuilder().build());
             }
@@ -145,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        String linkGoogle = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
+        String linkAmazon= "http://www.amazon.com/gp/mas/dl/android?p=com.benzino.fiveminworkout";
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(id == R.id.action_share) {
             String link = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
-            String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + link;
+            String message = "Check out this awesome app i just installed, it helps me lose fat and get in shape.\nDownload it from here: \n" + linkGoogle;
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_TEXT, message);
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(Email, "Send Feedback:"));
             return true;
         }else if(id == R.id.action_rate){
-            Uri uri = Uri.parse("market://details?id=com.benzino.fiveminworkout");
+            Uri uri = Uri.parse(linkGoogle);
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
             // to taken back to our application, we need to add following flags to intent.
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(goToMarket);
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout")));
+                        Uri.parse(linkAmazon)));
             }
         }
 

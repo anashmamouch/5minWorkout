@@ -120,8 +120,10 @@ public class SettingsActivity extends MyPreferenceActivity implements SharedPref
             share.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
+                    String linkGoogle = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
+                    String linkAmazon= "http://www.amazon.com/gp/mas/dl/android?p=com.benzino.fiveminworkout";
                     String link = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
-                    String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + link;
+                    String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + linkGoogle;
                     Intent share = new Intent(Intent.ACTION_SEND);
                     share.setType("text/plain");
                     share.putExtra(Intent.EXTRA_TEXT, message);

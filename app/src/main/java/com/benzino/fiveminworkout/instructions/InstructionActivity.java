@@ -120,13 +120,16 @@ public abstract class InstructionActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        String linkGoogle = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
+        String linkAmazon= "http://www.amazon.com/gp/mas/dl/android?p=com.benzino.fiveminworkout";
+
         if (id == R.id.action_settings) {
             startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
             return true;
         }
         else if(id == R.id.action_share) {
             String link = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
-            String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + link;
+            String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + linkGoogle;
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_TEXT, message);
@@ -144,7 +147,7 @@ public abstract class InstructionActivity extends AppCompatActivity {
 
             return true;
         }else if(id == R.id.action_rate){
-            Uri uri = Uri.parse("market://details?id=com.benzino.fiveminworkout");
+            Uri uri = Uri.parse(linkGoogle);
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
             // to taken back to our application, we need to add following flags to intent.
@@ -156,7 +159,7 @@ public abstract class InstructionActivity extends AppCompatActivity {
                 startActivity(goToMarket);
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout")));
+                        Uri.parse(linkAmazon)));
             }
         }
 

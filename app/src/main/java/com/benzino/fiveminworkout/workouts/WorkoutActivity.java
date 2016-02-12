@@ -71,9 +71,6 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     protected String[] workouts;//array of exercises
     protected String[] videos;//array of videos
 
-    private long startTime;
-    private long launchTime;
-
     private AdView mAdView;
 
     @Override
@@ -150,7 +147,6 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     public void onClick(View view) {
         if (view.getId() == R.id.counter){
             counter.setEnabled(false);
-            launchTime = System.currentTimeMillis();
             mWakeLock.acquire();
 
             new Task().execute();
@@ -175,8 +171,9 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             onBackPressed();
 
         if (view.getId() == R.id.share_workout){
-            String link = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
-            String message = "I just finished my "+setToolbarTitle()+" and i feel great thanks to this awesome app #5minWorkout.\nDownload it from here: \n" + link;
+            String linkGoogle = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
+            String linkAmazon= "http://www.amazon.com/gp/mas/dl/android?p=com.benzino.fiveminworkout";
+            String message = "I just finished my "+setToolbarTitle()+" and i feel great thanks to this awesome app #5minWorkout.\nDownload it from here: \n" + linkAmazon;
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_TEXT, message);
@@ -215,7 +212,6 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("ANAS", "Workout Activity Stopped");
     }
 
     /** Called when activity is destroyed */
@@ -332,7 +328,6 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
             public void onInit(int status) {
 
                 if(status == TextToSpeech.SUCCESS){
-                    Log.d("ANASPEAK", "Text To Speech Status: "+ status);
                     Bundle bundle = new Bundle();
                     bundle.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ANAS");
 
@@ -348,7 +343,6 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
                     }
                 }else{
                     ttsReady = true;
-                    Log.d("ANASPEAK", "Text To Speech Status: "+ status);
                 }
 
             }
@@ -357,15 +351,11 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                startTime = System.currentTimeMillis();
                 ttsReady = true;
-                Log.d("ANAS", "started: " + startTime + ", delay: " + (startTime - launchTime));
             }
 
             @Override
             public void onDone(String utteranceId) {
-                long millis = System.currentTimeMillis();
-                Log.d("ANAS", "done: " + millis + ", total: " + (millis - launchTime) + ", duration: " + (millis - startTime));
             }
 
             @Override
@@ -480,7 +470,6 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
         if ( timer.mMillisLeft < (TOTAL_TIME - (j + 1) * EXERCISE_TIME - j * REST_TIME + INTERVAL)){
             j++;
-            Log.d("ANASTORM", "Array = "+array[j]+"; Value of j = " + j +"; Value of n = "+ n );
         }
     }
 
@@ -531,13 +520,9 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
 
             @Override
             public void onTick(long millisUntilFinished) {
-
-                    Log.d("ANASTIME", "Milliseconds left: "+ timer.mMillisLeft);
                     //Display the remaining seconds to app interface
                     //1 second = 1000 milliseconds
                     counter.setText("");
-
-                    Log.d("ANASS", "isSpeaking?= " + tts.isSpeaking() + "; isReady?=" + ttsReady + ";  Time: " + timer.mMillisLeft);
 
                     speaking(workouts);
 
@@ -563,8 +548,6 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         pause.setEnabled(true);
         pause.setVisibility(View.VISIBLE);
 
-        Log.d("ANAS", "Resume button pressed");
-
         //Resumes the timer
         timer.resume();
     }
@@ -577,8 +560,6 @@ public abstract class WorkoutActivity extends AppCompatActivity implements View.
         pause.setVisibility(View.GONE);
         resume.setEnabled(true);
         resume.setVisibility(View.VISIBLE);
-
-        Log.d("ANAS", "Pause button pressed");
 
         //Pauses the timer
         timer.pause();
