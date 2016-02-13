@@ -24,7 +24,6 @@ import com.google.android.gms.ads.AdView;
 public class SettingsActivity extends MyPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     SharedPreferences sp;
-    int anas;
     AdView mAdView;
 
     @Override
@@ -39,16 +38,8 @@ public class SettingsActivity extends MyPreferenceActivity implements SharedPref
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new MyPreferenceFragment())
                 .commit();
-
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        String strUserName = sp.getString("username", "NA");
-        boolean bAppUpdates = sp.getBoolean("applicationUpdates", false);
-        String downloadType = sp.getString("downloadType", "1");
-        int anass = sp.getInt("preference_value", 0);
-
-
-        //Toast.makeText(getApplicationContext(), strUserName, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -56,9 +47,20 @@ public class SettingsActivity extends MyPreferenceActivity implements SharedPref
         return MyPreferenceFragment.class.getName().equals(fragmentName);
     }
 
+
+    /**
+     * Called when a shared preference is changed, added, or removed. This
+     * may be called even if a preference is set to its existing value.
+     * <p>
+     * <p>This callback will be run on your main thread.
+     *
+     * @param sharedPreferences The {@link SharedPreferences} that received
+     *                          the change.
+     * @param key               The key of the preference that was changed, added, or
+     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        anas = sharedPreferences.getInt("exercise_time", 12);
+
     }
 
     @Override

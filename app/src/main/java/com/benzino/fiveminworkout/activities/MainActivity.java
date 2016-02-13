@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(Email, "Send Feedback:"));
             return true;
         }else if(id == R.id.action_rate){
-            Uri uri = Uri.parse(linkGoogle);
+            Uri uri = Uri.parse("market://details?id=com.benzino.fiveminworkout");
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
             // to taken back to our application, we need to add following flags to intent.
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(goToMarket);
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(linkAmazon)));
+                        Uri.parse(linkGoogle)));
             }
         }
 

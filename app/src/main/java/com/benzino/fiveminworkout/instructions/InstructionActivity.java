@@ -128,7 +128,6 @@ public abstract class InstructionActivity extends AppCompatActivity {
             return true;
         }
         else if(id == R.id.action_share) {
-            String link = "http://play.google.com/store/apps/details?id=com.benzino.fiveminworkout";
             String message = "Check out this awesome app i just installed, it helps me lose fat and improve my health.\nDownload it from here: \n" + linkGoogle;
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
@@ -147,7 +146,7 @@ public abstract class InstructionActivity extends AppCompatActivity {
 
             return true;
         }else if(id == R.id.action_rate){
-            Uri uri = Uri.parse(linkGoogle);
+            Uri uri = Uri.parse("market://details?id=com.benzino.fiveminworkout");
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
             // to taken back to our application, we need to add following flags to intent.
@@ -159,7 +158,7 @@ public abstract class InstructionActivity extends AppCompatActivity {
                 startActivity(goToMarket);
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(linkAmazon)));
+                        Uri.parse(linkGoogle)));
             }
         }
 
